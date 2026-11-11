@@ -1,7 +1,6 @@
-// Shared behaviour: Mailchimp signup form (inline + popup).
+// Shared behaviour: newsletter signup form (inline + popup), submitted to Formspree.
 (() => {
-  // Paste the "action" URL from Mailchimp: Audience > Signup forms > Embedded forms.
-  const MAILCHIMP_ACTION = 'https://YOUR_DC.list-manage.com/subscribe/post?u=YOUR_U&id=YOUR_ID';
+  const SIGNUP_ENDPOINT = 'https://formspree.io/f/xbgorovg';
   const POPUP_DELAY_MS = 5000;
   const SEEN_KEY = 'ec:signup-seen';
 
@@ -10,20 +9,16 @@
     set: (k, v) => { try { localStorage.setItem(k, v); } catch { /* storage unavailable */ } },
   };
 
-  const configured = !/YOUR_/.test(MAILCHIMP_ACTION);
-
   function formHtml() {
-    const params = new URL(MAILCHIMP_ACTION).searchParams;
-    // Mailchimp's anti-bot honeypot field is named b_<u>_<id>.
-    const trap = `b_${params.get('u')}_${params.get('id')}`;
     return `
-      <form class="signup" action="${MAILCHIMP_ACTION}" method="post" target="_blank" novalidate>
+      <form class="signup" action="${SIGNUP_ENDPOINT}" method="post" novalidate>
         <div class="signup__row">
-          <input type="email" name="EMAIL" aria-label="Email address" placeholder="Email address" autocomplete="email" required>
+          <input type="email" name="email" aria-label="Email address" placeholder="Email address" autocomplete="email" required>
           <button class="btn" type="submit">Subscribe</button>
         </div>
+        <input type="hidden" name="_subject" value="New newsletter signup">
         <div class="signup__trap" aria-hidden="true">
-          <input type="text" name="${trap}" tabindex="-1" autocomplete="off" value="">
+          <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" value="">
         </div>
         <p class="signup__note" role="status"></p>
       </form>`;
@@ -32,22 +27,37 @@
   function wireForm(form, onSuccess) {
     const note = form.querySelector('.signup__note');
     const email = form.querySelector('input[type="email"]');
-    form.addEventListener('submit', (e) => {
-      if (!configured) {
-        e.preventDefault();
-        note.textContent = 'Signup is not connected yet. Set MAILCHIMP_ACTION in assets/js/site.js.';
-        return;
-      }
+    const button = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
       if (!email.checkValidity() || !email.value.trim()) {
-        e.preventDefault();
         note.textContent = 'Please enter a valid email address.';
         email.focus();
         return;
       }
-      // Mailchimp opens in a new tab to confirm; keep this page as is.
-      note.textContent = 'Thanks — check the new tab to confirm your subscription.';
-      store.set(SEEN_KEY, 'subscribed');
-      if (onSuccess) setTimeout(onSuccess, 1200);
+      button.disabled = true;
+      note.textContent = 'Subscribing…';
+      try {
+        const res = await fetch(SIGNUP_ENDPOINT, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new FormData(form),
+        });
+        if (res.ok) {
+          note.textContent = 'Thanks — you’re on the list.';
+          email.value = '';
+          store.set(SEEN_KEY, 'subscribed');
+          if (onSuccess) setTimeout(onSuccess, 1500);
+        } else {
+          const data = await res.json().catch(() => ({}));
+          note.textContent = data.errors?.map((err) => err.message).join(' ') || 'Something went wrong. Please try again.';
+        }
+      } catch {
+        note.textContent = 'Network error. Please try again.';
+      } finally {
+        button.disabled = false;
+      }
     });
   }
 

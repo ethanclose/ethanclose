@@ -17,9 +17,10 @@ Static site (HTML, CSS, vanilla JS) for Cloudflare Pages. No framework.
   regenerated file, or set the command as the Cloudflare Pages build command
   (framework preset: None, build output directory: `/`).
 - **Videos**: edit `assets/videos/oaklandojos.txt`, one `landscape|portrait,title,youtube-url` per line.
-- **Mailchimp**: set `MAILCHIMP_ACTION` at the top of `assets/js/site.js` to the form action URL from
-  Audience > Signup forms > Embedded forms. The popup shows once, 5 seconds after a first visit,
-  and can be toggled any time from **Sign Up** in the nav.
+- **Signup**: the popup and the Contact page mailing list post to Formspree (`SIGNUP_ENDPOINT` at the top
+  of `assets/js/site.js`). The contact message form on `contact.html` uses its own Formspree form.
+  The popup shows once, 5 seconds after a first visit, and can be toggled any time from **Sign Up**
+  in the nav.
 
 ## Local preview
 
