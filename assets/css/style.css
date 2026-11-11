@@ -537,7 +537,7 @@ main.home { display: flex; align-items: center; }
 
 .contact h2 { font-size: clamp(1.75rem, 3.5vw, 2.5rem); font-weight: 400; letter-spacing: -0.02em; }
 
-.contact dl { margin: 2rem 0 0; }
+.contact dl { margin: 0; }
 .contact dt { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--mute); }
 .contact dd { margin: 0.15rem 0 1.5rem; font-size: 1.25rem; }
 
