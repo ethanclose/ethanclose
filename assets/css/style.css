@@ -508,6 +508,53 @@ main { flex: 1 0 auto; }
 
 /* ---------- Signup form + modal ---------- */
 
+.contact__side { display: grid; gap: clamp(2.5rem, 5vw, 4rem); align-content: start; }
+
+.contact__side h2 { margin-bottom: 1rem; }
+
+.message-form { display: grid; gap: 0.35rem; }
+
+.message-form label { margin-top: 0.75rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--mute); }
+
+.message-form input[type="text"]:not(.signup__trap),
+.message-form input[type="email"],
+.message-form textarea {
+  width: 100%;
+  padding: 0.6rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--ink);
+  border-radius: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  resize: vertical;
+}
+
+.message-form input:focus,
+.message-form textarea:focus { outline: none; border-bottom-width: 2px; }
+
+.message-form [aria-invalid="true"] { border-bottom: 2px solid var(--ink); }
+
+.message-form .btn { justify-self: start; margin-top: 1.25rem; }
+
+.message-form .btn:disabled { opacity: 0.5; cursor: progress; }
+
+.fs-error { min-height: 1.1em; font-size: 0.85rem; }
+
+.fs-status:empty { display: none; }
+
+.fs-status {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--ink) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--ink) !important;
+  font-size: 0.95rem;
+}
+
+.fs-error { color: var(--ink) !important; }
+
 .signup p { margin: 0 0 1.25rem; }
 
 .signup__row { display: flex; flex-wrap: wrap; gap: 0.75rem; }

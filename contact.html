@@ -35,15 +35,44 @@
         </dl>
       </section>
 
-      <section id="signup">
-        <h2>Mailing list</h2>
-        <p>New photos and videos, now and then. No spam.</p>
-        <div data-signup-form></div>
-      </section>
+      <div class="contact__side">
+        <section id="message">
+          <h2>Send a message</h2>
+          <div class="fs-status" data-fs-success role="status"></div>
+          <div class="fs-status" data-fs-error role="alert"></div>
+          <form id="contact-form" class="message-form" novalidate>
+            <label for="cf-name">Name</label>
+            <input type="text" id="cf-name" name="name" autocomplete="name" data-fs-field>
+            <span class="fs-error" data-fs-error="name"></span>
+
+            <label for="cf-email">Email</label>
+            <input type="email" id="cf-email" name="email" autocomplete="email" required data-fs-field>
+            <span class="fs-error" data-fs-error="email"></span>
+
+            <label for="cf-message">Message</label>
+            <textarea id="cf-message" name="message" rows="5" required data-fs-field></textarea>
+            <span class="fs-error" data-fs-error="message"></span>
+
+            <input type="text" name="_gotcha" class="signup__trap" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <button class="btn" type="submit" data-fs-submit-btn>Send</button>
+          </form>
+        </section>
+
+        <section id="signup">
+          <h2>Mailing list</h2>
+          <p>New photos and videos, now and then. No spam.</p>
+          <div data-signup-form></div>
+        </section>
+      </div>
     </div>
   </main>
 
   <footer class="site-footer">&copy; Ethan Close</footer>
   <script src="assets/js/site.js"></script>
+  <script>
+    window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+    formspree('initForm', { formElement: '#contact-form', formId: 'maeowoal' });
+  </script>
+  <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 </body>
 </html>
