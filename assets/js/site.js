@@ -61,12 +61,6 @@
     });
   }
 
-  // Inline form on the Contact page.
-  document.querySelectorAll('[data-signup-form]').forEach((host) => {
-    host.innerHTML = formHtml();
-    wireForm(host.querySelector('form'));
-  });
-
   // Popup.
   const modal = document.createElement('div');
   modal.className = 'modal';
@@ -116,8 +110,8 @@
     });
   });
 
-  // Auto-open once for first-time visitors (not on Contact, which already has the form).
-  const onContact = !!document.querySelector('[data-signup-form]');
+  // Auto-open once for first-time visitors (not on Contact).
+  const onContact = /(^|\/)contact(\.html)?$/.test(location.pathname);
   if (!store.get(SEEN_KEY) && !onContact) {
     setTimeout(() => {
       if (!store.get(SEEN_KEY) && !document.body.classList.contains('overlay-open')) open();
