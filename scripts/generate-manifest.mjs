@@ -1,5 +1,5 @@
 // Scans assets/images/<album>/* and writes assets/images/manifest.json.
-// Browsers cannot list directories on a static host, so the Images page reads this file.
+// Browsers cannot list directories on a static host, so the Photos page reads this file.
 // Run:  node scripts/generate-manifest.mjs
 import { readdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';

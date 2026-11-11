@@ -1,4 +1,4 @@
-// Images page: album list, album view (?album=<title>) and zoomable lightbox.
+// Photos page: album list, album view (?album=<title>) and zoomable lightbox.
 (() => {
   const app = document.getElementById('app');
   const MAX_ZOOM = 6;
@@ -13,7 +13,7 @@
   }
 
   function renderAlbums(albums) {
-    document.title = 'Images — Ethan Close';
+    document.title = 'Photos — Ethan Close';
     app.innerHTML = `<div class="albums">${albums.map((a) => `
       <a class="album" href="images.html?album=${encodeURIComponent(a.title)}">
         <div class="album__head">
@@ -220,7 +220,7 @@
       else app.innerHTML = '<p class="status">No albums yet.</p>';
     } catch (err) {
       console.error(err);
-      app.innerHTML = '<p class="status">Could not load images.</p>';
+      app.innerHTML = '<p class="status">Could not load photos.</p>';
     }
   })();
 })();

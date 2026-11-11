@@ -6,7 +6,7 @@ Static site (HTML, CSS, vanilla JS) for Cloudflare Pages. No framework.
 
 ## Content
 
-- **Images**: put photos in `assets/images/<Album Title>/`. The folder name is the album title and
+- **Photos**: put photos in `assets/images/<Album Title>/`. The folder name is the album title and
   the first file (sorted by name) is the cover. Then regenerate the manifest:
 
   ```
