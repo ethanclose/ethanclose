@@ -484,6 +484,34 @@ main { flex: 1 0 auto; }
   font-size: clamp(1.25rem, 2.5vw, 1.75rem);
 }
 
+.about-list {
+  max-width: 36ch;
+  margin: 0;
+  padding-left: 1.1em;
+  font-family: var(--serif);
+  font-size: clamp(1.35rem, 3vw, 2.1rem);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.about-list li { margin-bottom: 1em; padding-left: 0.2em; }
+
+.about-list li::marker { font-size: 0.6em; }
+
+.about-list a {
+  text-decoration: underline dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.about-list a:hover { text-decoration-style: solid; }
+
+.detail { padding-top: 1rem; padding-bottom: 2rem; }
+
+.detail__figure { margin: 1rem 0 0; }
+
+.detail__figure img { width: 100%; max-width: 932px; height: auto; margin: 0 auto; }
+
 .contact { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 6vw, 5rem); padding-block: clamp(3rem, 8vw, 6rem); }
 
 .contact h1,
