@@ -1,0 +1,15 @@
+- Always create a new descriptive feature branch (e.g. feature/...) from the latest main branch before modifying any files, committing, or opening a pull request.
+- Never commit or push directly to main.
+
+### Pull Request Guidelines
+When creating a pull request using `gh pr create`, always adhere to the following template:
+
+- **Branch Naming:** `feature/short-description` or `fix/short-description`
+- **PR Title Format:** `type(scope): concise summary in imperative mood` (e.g., `feat(about): remove outdated third paragraph`)
+- **PR Body Template:**
+  ```markdown
+  ### Summary
+  - Bullet points describing the core changes made in this branch.
+
+  ### Testing
+  - Describe how these changes were verified locally.
