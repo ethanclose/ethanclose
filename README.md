@@ -25,6 +25,9 @@ Static site (HTML, CSS, vanilla JS) for Cloudflare Pages. No framework.
 ## Local preview
 
 ```
-python3 -m http.server 8000
+python3 -m http.server 8765 --bind 127.0.0.1
 ```
+
+Open <http://127.0.0.1:8765/>. To preview from a phone on the same Wi-Fi, drop `--bind 127.0.0.1`
+and open `http://<your-ip>:8765/`. No build step and no dependencies.
 
