@@ -177,10 +177,49 @@ main.home { display: flex; align-items: center; }
   text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
 }
 
-.card:hover img,
-.card:focus-visible img { transform: scale(1.04); opacity: 1; }
+.card:not(.card--about):hover img,
+.card:not(.card--about):focus-visible img { transform: scale(1.04); opacity: 1; }
 
 .card:hover::after { background: rgba(0, 0, 0, 0.05); }
+
+/* About card: cross-fades the 4th Pumpkin/Mancha frame (mouth shut) over the 3rd
+   (mouth open), so the cat reads as meowing. Both are crops of the same shot, so the
+   second frame is placed inside the first frame's coordinate space — measured from the
+   originals: scale 0.9785, offset -58px / -1.7px — and masked to the cat. That keeps
+   everything else pixel-still and hides the edges of the smaller crop. */
+.card--about .card__frames {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: max(100cqw, 88.74cqh);   /* cover the card at frame 1's 1340 x 1510 ratio */
+  height: max(100cqh, 112.69cqw);
+  opacity: 0.88;
+  transition: transform 0.6s ease, opacity 0.3s ease;
+}
+
+.card--about:hover .card__frames,
+.card--about:focus-visible .card__frames { transform: scale(1.04); opacity: 1; }
+
+.card--about img { position: absolute; opacity: 1; transition: none; }
+
+.card--about img:first-child { inset: 0; }
+
+.card--about img:last-child {
+  top: -0.11%;    /* -1.68 / 1510 */
+  left: -4.33%;   /* -58.02 / 1340 */
+  width: 96.25%;  /* 1318 x 0.9785 / 1340 */
+  height: auto;
+  opacity: 0;
+  -webkit-mask-image: radial-gradient(ellipse 23.26% 28.53% at 44.85% 21.76%, #000 80%, transparent);
+  mask-image: radial-gradient(ellipse 23.26% 28.53% at 44.85% 21.76%, #000 80%, transparent);
+  animation: card-meow 4.5s ease-in-out infinite;
+}
+
+@keyframes card-meow {
+  0%, 30% { opacity: 0; }
+  45%, 85% { opacity: 1; }
+  100% { opacity: 0; }
+}
 
 @media (max-width: 900px) {
   .cards { grid-template-columns: repeat(2, 1fr); }
