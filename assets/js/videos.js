@@ -28,18 +28,12 @@
   }
 
   function render(videos) {
-    const still = videos.length < 2 ? ' vcarousel--still' : '';
-    app.innerHTML = `
-      <section class="vcarousel${still}" style="--n: ${videos.length}" aria-label="Videos">
-        <div class="vcarousel__ring">
-          ${videos.map((v, i) => `
-          <button class="video video--${v.orientation}" type="button" style="--i: ${i}" data-index="${i}" aria-label="Play ${esc(v.title)}">
-            <img src="https://i.ytimg.com/vi/${v.id}/${v.orientation === 'portrait' ? 'oar2' : 'maxresdefault'}.jpg" alt="" loading="${i === 0 ? 'eager' : 'lazy'}" decoding="async">
-            <span class="video__play" aria-hidden="true"></span>
-            <span class="video__title">${esc(v.title)}</span>
-          </button>`).join('')}
-        </div>
-      </section>`;
+    app.innerHTML = videos.map((v, i) => `
+      <button class="video video--${v.orientation}" type="button" data-index="${i}" aria-label="Play ${esc(v.title)}">
+        <img src="https://i.ytimg.com/vi/${v.id}/${v.orientation === 'portrait' ? 'oar2' : 'maxresdefault'}.jpg" alt="" loading="${i === 0 ? 'eager' : 'lazy'}" decoding="async">
+        <span class="video__play" aria-hidden="true"></span>
+        <span class="video__title">${esc(v.title)}</span>
+      </button>`).join('');
 
     app.querySelectorAll('.video img').forEach((img, i) => {
       img.addEventListener('error', () => {
