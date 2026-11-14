@@ -574,6 +574,9 @@ main.home .wrap { max-width: none; padding: 0; }
 
 /* ---------- About / Contact ---------- */
 
+/* Custom fix: Mirror seagull image on contact page */
+.contact__seagull img { transform: scaleX(-1); }
+
 .statement { padding: clamp(3rem, 9vw, 7rem) 0; }
 
 .statement h1 {
