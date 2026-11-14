@@ -639,20 +639,38 @@ main.home .wrap { max-width: none; padding: 0; }
 .contact dt { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--mute); }
 .contact dd { margin: 0.15rem 0 1.5rem; font-size: 1.25rem; }
 
-/* Seagull from the home page, pinned to the lower left corner of the contact page. */
-.contact-page { position: relative; }
+/* Seagull from the home page. It fills the left column below the contact
+   details: left edge lines up with "Email", bottom edge with the Send button. */
+.contact { grid-template-rows: auto 1fr; }
+.contact > section { grid-column: 1; grid-row: 1; }
+.contact__side { grid-column: 2; grid-row: 1 / span 2; }
 
-.contact-page__seagull {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: clamp(7rem, 16vw, 12rem);
-  height: auto;
+.contact__seagull {
+  position: relative;
+  grid-column: 1;
+  grid-row: 2;
+  min-height: 10rem;
+  margin-top: clamp(1rem, 2.5vw, 2rem);
   pointer-events: none;
 }
 
+/* Absolutely positioned so the image never makes the row taller than the form. */
+.contact__seagull img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: left bottom;
+}
+
 @media (max-width: 760px) {
-  .contact { grid-template-columns: 1fr; }
+  .contact { grid-template-columns: 1fr; grid-template-rows: none; }
+  .contact > section,
+  .contact__side,
+  .contact__seagull { grid-column: auto; grid-row: auto; }
+  .contact__seagull { order: 1; min-height: 0; margin-top: 0; }
+  .contact__seagull img { position: static; width: clamp(8rem, 45vw, 14rem); height: auto; }
 }
 
 /* ---------- Signup form + modal ---------- */
