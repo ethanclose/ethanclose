@@ -231,11 +231,18 @@ main.home .wrap { max-width: none; padding: 0; }
    (mouth open), so the cat reads as meowing. Both are crops of the same shot, so the
    second frame is placed inside the first frame's coordinate space — measured from the
    originals: scale 0.9785, offset -58px / -1.7px — and masked to the cat. That keeps
-   everything else pixel-still and hides the edges of the smaller crop. */
+   everything else pixel-still and hides the edges of the smaller crop.
+
+   The frame is pinned to the top of the card and only centred horizontally. When a
+   short viewport (a laptop) caps the card height, the card ends up wider than frame 1's
+   1340 x 1510 crop, so the frame overflows vertically — a centred frame would crop the
+   cat's head off. Anchoring to the top keeps the head in shot and takes the extra height
+   off the table at the bottom. On portrait phones the overflow is horizontal (and safe),
+   so the top pin changes nothing. */
 .card--about .card__frames {
   position: absolute;
-  inset: 0;
-  margin: auto;
+  top: 0;
+  left: calc((100cqw - max(100cqw, 88.74cqh)) / 2);   /* centre the horizontal crop */
   width: max(100cqw, 88.74cqh);   /* cover the card at frame 1's 1340 x 1510 ratio */
   height: max(100cqh, 112.69cqw);
   opacity: 0.88;
