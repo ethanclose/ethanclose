@@ -13,7 +13,7 @@
   }
 
   function renderAlbums(albums) {
-    document.title = 'Photos — Ethan Close';
+    document.title = 'Photos — ethan close';
     app.innerHTML = `<div class="albums">${albums.map((a) => `
       <a class="album" href="images.html?album=${encodeURIComponent(a.title)}">
         <div class="album__head">
@@ -25,7 +25,7 @@
   }
 
   function renderAlbum(album) {
-    document.title = `${album.title} — Ethan Close`;
+    document.title = `${album.title} — ethan close`;
     app.innerHTML = `
       <div class="album-view">
         <a class="back" href="images.html">&larr; All albums</a>
