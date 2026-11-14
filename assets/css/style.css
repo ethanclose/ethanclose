@@ -275,7 +275,8 @@ main.home .wrap { max-width: none; padding: 0; }
 
 .albums { display: grid; gap: clamp(2.5rem, 6vw, 5rem); padding: 1rem var(--gutter) 2rem; }
 
-.album { display: block; text-decoration: none; }
+/* Album covers sit at half their previous width, centred. */
+.album { display: block; width: 50%; margin-inline: auto; text-decoration: none; }
 
 .album__head {
   display: flex;
