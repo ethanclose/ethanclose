@@ -1,0 +1,108 @@
+// Home page: drag the section carousel to spin it. A flick speeds the ring up;
+// after release it coasts and eases back to the slow default rotation.
+(() => {
+  const cards = document.querySelector('.cards');
+  const ring = cards?.querySelector('.cards__ring');
+  if (!cards || !ring) return;
+
+  const BASE_SPEED = -360 / 40;   // deg/s: one slow turn every 40s, as before
+  const DEG_PER_PX = 0.3;
+  const MAX_SPEED = 720;          // deg/s
+  const FRICTION = 1.5;           // 1/s: how quickly the spin settles to BASE_SPEED
+  const DRAG_THRESHOLD = 6;       // px before movement counts as a drag
+
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  let angle = 0;
+  let velocity = BASE_SPEED;
+  let lastFrame = 0;
+  let pointer = null;
+  let startX = 0;
+  let lastX = 0;
+  let lastT = 0;
+  let lastMove = 0;
+  let moved = false;
+  let suppressUntil = 0;
+
+  const wrap = (a) => ((a + 180) % 360 + 360) % 360 - 180;
+  const render = () => { ring.style.transform = `rotateY(${angle}deg)`; };
+
+  function keyboardFocus() {
+    const el = document.activeElement;
+    if (!el || el === document.body || !cards.contains(el)) return false;
+    try { return el.matches(':focus-visible'); } catch { return false; }
+  }
+
+  function frame(now) {
+    requestAnimationFrame(frame);
+    const dt = Math.min((now - lastFrame) / 1000, 0.05);
+    lastFrame = now;
+    if (pointer !== null || reduced.matches || keyboardFocus()) return;
+    velocity += (BASE_SPEED - velocity) * (1 - Math.exp(-FRICTION * dt));
+    angle = wrap(angle + velocity * dt);
+    render();
+  }
+
+  function onPointerMove(e) {
+    if (e.pointerId !== pointer) return;
+    const now = performance.now();
+    const dx = e.clientX - lastX;
+    lastX = e.clientX;
+
+    if (!moved) {
+      if (Math.abs(e.clientX - startX) < DRAG_THRESHOLD) { lastT = now; return; }
+      moved = true;
+      cards.classList.add('is-dragging');
+    }
+
+    const dt = Math.max((now - lastT) / 1000, 0.008);
+    lastT = lastMove = now;
+    angle = wrap(angle + dx * DEG_PER_PX);
+    const instant = (dx * DEG_PER_PX) / dt;
+    velocity = Math.max(-MAX_SPEED, Math.min(MAX_SPEED, velocity * 0.6 + instant * 0.4));
+    render();
+  }
+
+  function onPointerEnd(e) {
+    if (e.pointerId !== pointer) return;
+    pointer = null;
+    cards.classList.remove('is-dragging');
+    window.removeEventListener('pointermove', onPointerMove);
+    window.removeEventListener('pointerup', onPointerEnd);
+    window.removeEventListener('pointercancel', onPointerEnd);
+    if (moved) suppressUntil = performance.now() + 500;
+    if (reduced.matches || performance.now() - lastMove > 120) {
+      velocity = reduced.matches ? 0 : BASE_SPEED;
+    }
+  }
+
+  cards.addEventListener('pointerdown', (e) => {
+    if (pointer !== null || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    pointer = e.pointerId;
+    startX = lastX = e.clientX;
+    lastT = lastMove = performance.now();
+    moved = false;
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerEnd);
+    window.addEventListener('pointercancel', onPointerEnd);
+  });
+
+  // A drag that ends over a card must not follow the link.
+  cards.addEventListener('click', (e) => {
+    if (performance.now() < suppressUntil) {
+      e.preventDefault();
+      e.stopPropagation();
+      suppressUntil = 0;
+    }
+  }, true);
+
+  cards.addEventListener('dragstart', (e) => e.preventDefault());
+
+  reduced.addEventListener('change', () => {
+    velocity = reduced.matches ? 0 : BASE_SPEED;
+  });
+
+  cards.classList.add('cards--ready');
+  render();
+  lastFrame = performance.now();
+  requestAnimationFrame(frame);
+})();
