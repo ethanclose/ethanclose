@@ -654,7 +654,9 @@ main.home .wrap { max-width: none; padding: 0; }
   pointer-events: none;
 }
 
-/* Absolutely positioned so the image never makes the row taller than the form. */
+/* Absolutely positioned so the image never makes the row taller than the form.
+   Scaled up 1.5x from the bottom-left corner so it stays aligned with the
+   Send button and "Email" while rendering 50% larger. */
 .contact__seagull img {
   position: absolute;
   inset: 0;
@@ -662,6 +664,8 @@ main.home .wrap { max-width: none; padding: 0; }
   height: 100%;
   object-fit: contain;
   object-position: left bottom;
+  transform: scale(1.5);
+  transform-origin: left bottom;
 }
 
 @media (max-width: 760px) {
@@ -670,7 +674,7 @@ main.home .wrap { max-width: none; padding: 0; }
   .contact__side,
   .contact__seagull { grid-column: auto; grid-row: auto; }
   .contact__seagull { order: 1; min-height: 0; margin-top: 0; }
-  .contact__seagull img { position: static; width: clamp(12rem, 67.5vw, 21rem); height: auto; }
+  .contact__seagull img { position: static; width: clamp(18rem, 100vw, 31.5rem); height: auto; transform: none; }
 }
 
 /* ---------- Signup form + modal ---------- */
