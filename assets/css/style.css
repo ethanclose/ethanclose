@@ -639,6 +639,18 @@ main.home .wrap { max-width: none; padding: 0; }
 .contact dt { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--mute); }
 .contact dd { margin: 0.15rem 0 1.5rem; font-size: 1.25rem; }
 
+/* Seagull from the home page, pinned to the lower left corner of the contact page. */
+.contact-page { position: relative; }
+
+.contact-page__seagull {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: clamp(7rem, 16vw, 12rem);
+  height: auto;
+  pointer-events: none;
+}
+
 @media (max-width: 760px) {
   .contact { grid-template-columns: 1fr; }
 }
