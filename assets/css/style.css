@@ -659,7 +659,9 @@ main.home .wrap { max-width: none; padding: 0; }
 /* Left column: contact details on top, seagull filling the space below them.
    Its top sits under "Oakland, California" (the details keep their bottom
    margin) and its bottom edge lines up with the Send button, the last thing in
-   the form column. The image is mirrored so the bird faces right. */
+   the form column. The image is mirrored so the bird faces right.
+   On narrow screens (see media query below) the bird sits between the details
+   and the form instead. */
 .contact__info { grid-column: 1; display: flex; flex-direction: column; min-height: 0; }
 .contact__info > section { flex: none; }
 .contact__side { grid-column: 2; }
@@ -688,7 +690,9 @@ main.home .wrap { max-width: none; padding: 0; }
   .contact__info { display: contents; }
   .contact > section,
   .contact__side { grid-column: auto; }
-  .contact__seagull { order: 1; flex: none; min-height: 0; }
+  /* Stack order: contact details, then the seagull, then the form. */
+  .contact__seagull { flex: none; min-height: 0; }
+  .contact__side { order: 1; }
   .contact__seagull img { position: static; width: clamp(18rem, 100vw, 31.5rem); height: auto; transform: scaleX(-1); }
 }
 
