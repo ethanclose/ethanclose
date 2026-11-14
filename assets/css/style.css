@@ -273,7 +273,7 @@ main.home .wrap { max-width: none; padding: 0; }
   line-height: 1.1;
 }
 
-.albums { display: grid; gap: clamp(2.5rem, 6vw, 5rem); padding: 2.5rem var(--gutter) 2rem; }
+.albums { display: grid; gap: clamp(2.5rem, 6vw, 5rem); padding: clamp(3.5rem, 8vw, 6rem) var(--gutter) 2rem; }
 
 /* Album covers sit at half their previous width, centred. On phones they fill the
    width between the gutters so the photos read larger. */
@@ -315,7 +315,7 @@ main.home .wrap { max-width: none; padding: 0; }
 .album:hover .album__cover img,
 .album:focus-visible .album__cover img { transform: scale(1.02); }
 
-.album-view { max-width: 1100px; margin: 0 auto; padding: 1rem var(--gutter) 2rem; }
+.album-view { max-width: 1100px; margin: 0 auto; padding: clamp(2.5rem, 6vw, 4rem) var(--gutter) 2rem; }
 
 .back {
   display: inline-block;
