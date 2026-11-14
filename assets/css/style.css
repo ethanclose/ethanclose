@@ -38,7 +38,9 @@ button { font: inherit; color: inherit; }
 
 main { flex: 1 0 auto; }
 
-main.home { display: flex; align-items: center; }
+/* The footer is taller than the header, so the cards would sit slightly high. This
+   top padding (about footer height minus header height) centres them in the viewport. */
+main.home { display: flex; align-items: center; padding-top: 2.4rem; }
 
 main.home .wrap { max-width: none; padding: 0; }
 
