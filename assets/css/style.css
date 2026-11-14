@@ -147,7 +147,6 @@ main.home .wrap { max-width: none; padding: 0; }
   animation: cards-spin 40s linear infinite;
 }
 
-.cards:hover .cards__ring,
 .cards:focus-within .cards__ring { animation-play-state: paused; }
 
 @keyframes cards-spin {
