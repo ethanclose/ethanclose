@@ -649,7 +649,7 @@ main.home .wrap { max-width: none; padding: 0; }
   position: relative;
   grid-column: 1;
   grid-row: 2;
-  min-height: 10rem;
+  min-height: 15rem;
   margin-top: clamp(1rem, 2.5vw, 2rem);
   pointer-events: none;
 }
@@ -670,7 +670,7 @@ main.home .wrap { max-width: none; padding: 0; }
   .contact__side,
   .contact__seagull { grid-column: auto; grid-row: auto; }
   .contact__seagull { order: 1; min-height: 0; margin-top: 0; }
-  .contact__seagull img { position: static; width: clamp(8rem, 45vw, 14rem); height: auto; }
+  .contact__seagull img { position: static; width: clamp(12rem, 67.5vw, 21rem); height: auto; }
 }
 
 /* ---------- Signup form + modal ---------- */
