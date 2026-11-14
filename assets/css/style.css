@@ -273,7 +273,7 @@ main.home .wrap { max-width: none; padding: 0; }
   line-height: 1.1;
 }
 
-.albums { display: grid; gap: clamp(2.5rem, 6vw, 5rem); padding: 1rem var(--gutter) 2rem; }
+.albums { display: grid; gap: clamp(2.5rem, 6vw, 5rem); padding: 2.5rem var(--gutter) 2rem; }
 
 /* Album covers sit at half their previous width, centred. */
 .album { display: block; width: 50%; margin-inline: auto; text-decoration: none; }
