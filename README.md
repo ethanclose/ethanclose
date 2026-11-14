@@ -19,7 +19,7 @@ Static site (HTML, CSS, vanilla JS) for Cloudflare Pages. No framework.
 - **Videos**: edit `assets/videos/oaklandojos.txt`, one `landscape|portrait,title,youtube-url` per line.
 - **Signup**: the popup and the Contact page mailing list post to Formspree (`SIGNUP_ENDPOINT` at the top
   of `assets/js/site.js`). The contact message form on `contact.html` uses its own Formspree form.
-  The popup shows once, 5 seconds after a first visit, and can be toggled any time from **Sign Up**
+  The popup shows once, 5 seconds after a first visit, and can be toggled any time from **sign up**
   in the nav.
 
 ## Local preview
