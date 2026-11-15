@@ -137,9 +137,13 @@ main.home .wrap { max-width: none; padding: 0; }
   --arc: 80deg;
   --cw: calc(var(--r) * 1.4);   /* arc length of --arc at radius --r */
   --ch: min(41.5vh, calc(var(--cw) * 5 / 3));
+  --gap: clamp(2rem, 5vw, 4rem);
   position: relative;
   width: 100%;
-  height: calc(var(--ch) + 2 * clamp(2rem, 5vw, 4rem));
+  /* The front card sits at the near side of the drum, so the perspective enlarges
+     it by 4/3 (2 * --d / (2 * --d - --r)). Reserve that height, plus the usual
+     breathing room, or overflow: hidden clips the top and bottom of the drum. */
+  height: calc(var(--ch) * 4 / 3 + 2 * var(--gap));
   perspective: calc(var(--d) * 2);
   overflow: hidden;
   cursor: grab;
@@ -156,6 +160,15 @@ main.home .wrap { max-width: none; padding: 0; }
   .cards {
     --d: 75vw;
     --ch: min(51.9vh, calc(var(--cw) * 5 / 3));
+  }
+}
+
+/* Short portrait screens cannot fit the enlarged drum once the projected card is
+   accounted for, so pull it back in a little rather than making the page scroll. */
+@media (max-width: 760px) and (orientation: portrait) and (max-height: 750px) {
+  .cards {
+    --d: 66vw;
+    --gap: 1rem;
   }
 }
 
@@ -255,10 +268,12 @@ main.home .wrap { max-width: none; padding: 0; }
   transition: transform 0.6s ease, opacity 0.3s ease;
 }
 
-/* The video card is a single flat panel (see home.js), so the clip fills it exactly.
-   A card-sized, opaque layer is much cheaper to composite than the old oversized
-   16:9 box, and the darker scrim restores the photos' overall brightness. */
-.card.card--video::after { background: rgba(0, 0, 0, 0.28); }
+/* The video card's facets are painted from one source video (see home.js), so the
+   clip fills the card exactly. A card-sized, opaque layer is much cheaper to
+   composite than the old oversized 16:9 box, and the darker scrim matches the
+   photos' overall brightness. */
+.card.card--video::after,
+.card--video .card__facet::after { background: rgba(0, 0, 0, 0.28); }
 
 .card__video {
   position: absolute;
@@ -268,6 +283,33 @@ main.home .wrap { max-width: none; padding: 0; }
   object-fit: cover;
   border: 0;
   pointer-events: none;
+}
+
+/* Each facet paints its own strip of the single source video (see home.js). */
+.card__video-facet {
+  position: absolute;
+  top: 0;
+  left: calc(var(--j) * var(--sw));
+  width: calc(var(--sw) + 1px);
+  height: 100%;
+  display: block;
+}
+
+/* Poster fallback: if autoplay is blocked (e.g. iOS Low Power Mode) the canvases
+   stay clear and this shows through every facet. */
+.card--video .card__stage {
+  background: #000 url("../videos/short-crow-staging-poster.jpg") center / cover no-repeat;
+}
+
+/* The real video only feeds those canvases. Keep it decoding, but out of the way:
+   display: none would let browsers suspend it. */
+.card__video--source {
+  inset: auto;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0.01;
 }
 
 /* The dimming veil sits on every facet so it follows the curve. */

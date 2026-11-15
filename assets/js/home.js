@@ -23,10 +23,120 @@
   let lastMove = 0;
   let moved = false;
   let suppressUntil = 0;
-  let lastSync = 0;
 
   const wrap = (a) => ((a + 180) % 360 + 360) % 360 - 180;
   const render = () => { ring.style.transform = `rotateY(${angle}deg)`; };
+
+  // A video cannot be cloned into facets without giving every strip its own decoder,
+  // so the real <video> stays in the card as an offstage frame source and each facet
+  // gets a canvas that paints its own slice of the current frame. One decode, and the
+  // card still bends round the cylinder like the others.
+  function curveVideoCard(card, video) {
+    card.classList.add('card--curved');
+    card.style.setProperty('--slices', FACETS);
+
+    const cells = [];
+
+    for (let j = 0; j < FACETS; j += 1) {
+      const facet = document.createElement('div');
+      facet.className = 'card__facet';
+      facet.style.setProperty('--j', j);
+
+      const stage = document.createElement('div');
+      stage.className = 'card__stage';
+
+      const canvas = document.createElement('canvas');
+      canvas.className = 'card__video-facet';
+      canvas.setAttribute('aria-hidden', 'true');
+
+      stage.append(canvas);
+      facet.append(stage);
+      card.append(facet);
+      cells.push({ canvas, stage });
+    }
+
+    video.classList.add('card__video--source');
+    card.append(video);
+
+    let geometry = [];
+    let lastTime = -1;
+
+    function draw() {
+      if (video.readyState < 2) return;
+      for (const cell of geometry) {
+        cell.ctx.drawImage(video, cell.sx, cell.sy, cell.sw, cell.sh, 0, 0, cell.w, cell.h);
+      }
+    }
+
+    function measure() {
+      const vw = video.videoWidth;
+      const vh = video.videoHeight;
+      const stage = cells[0].stage;
+      const cw = parseFloat(getComputedStyle(stage).width);
+      const ch = parseFloat(getComputedStyle(stage).height);
+      if (!vw || !vh || !cw || !ch) return;
+
+      // Cover-crop the whole frame into the unrolled card, then map each facet's
+      // vertical strip of that card back to its slice of the source frame. Computed
+      // styles are used instead of offset* so fractional facet widths stay exact.
+      const ratio = Math.min(window.devicePixelRatio || 1, 3);
+      const scale = Math.max(cw / vw, ch / vh);
+      const ox = (cw - vw * scale) / 2;
+      const oy = (ch - vh * scale) / 2;
+
+      geometry = cells.map(({ canvas }) => {
+        const style = getComputedStyle(canvas);
+        const strip = parseFloat(style.width);
+        const w = Math.max(1, Math.round(strip * ratio));
+        const h = Math.max(1, Math.round(ch * ratio));
+        if (canvas.width !== w) canvas.width = w;
+        if (canvas.height !== h) canvas.height = h;
+        return {
+          ctx: canvas.getContext('2d'),
+          sx: (parseFloat(style.left) - ox) / scale,
+          sy: -oy / scale,
+          sw: strip / scale,
+          sh: ch / scale,
+          w,
+          h,
+        };
+      });
+
+      draw();
+    }
+
+    if (video.readyState >= 1) measure();
+    else video.addEventListener('loadedmetadata', measure, { once: true });
+
+    // The facet width changes with the viewport and the drum's breakpoints.
+    if ('ResizeObserver' in window) {
+      new ResizeObserver(() => requestAnimationFrame(measure)).observe(cells[0].stage);
+    } else {
+      window.addEventListener('resize', () => requestAnimationFrame(measure));
+    }
+
+    if (typeof video.requestVideoFrameCallback === 'function') {
+      const onFrame = () => {
+        draw();
+        video.requestVideoFrameCallback(onFrame);
+      };
+      video.requestVideoFrameCallback(onFrame);
+    } else {
+      const tick = () => {
+        if (video.readyState >= 2 && video.currentTime !== lastTime) {
+          lastTime = video.currentTime;
+          draw();
+        }
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }
+
+    requestAnimationFrame(measure);
+
+    const started = video.play();
+    if (started) started.catch(() => {});
+  }
 
   // A card is authored once, holding a single image/video. Bending it round the
   // cylinder means repeating that content into narrow facets, each of which shows one
@@ -37,10 +147,12 @@
       const content = card.firstElementChild;
       if (!content || content.classList.contains('card__facet')) continue;
 
-      // Slicing a video would give every facet its own decoder (eight copies of the
-      // clip playing at once), so the video card stays a single flat panel: one
-      // decode, and the whole clip readable instead of eight narrow strips.
-      if (content.tagName === 'VIDEO') continue;
+      // A video cannot be cloned into facets without spinning up one decoder per
+      // strip, so it is curved with canvas facets instead (see curveVideoCard).
+      if (content.tagName === 'VIDEO') {
+        curveVideoCard(card, content);
+        continue;
+      }
 
       card.classList.add('card--curved');
       card.style.setProperty('--slices', FACETS);
@@ -67,29 +179,6 @@
     }
   }
 
-  // Every facet carries its own copy of the video, so nudge the copies back onto the
-  // first one's clock if they have drifted apart.
-  function syncVideos(now) {
-    if (now - lastSync < 1000) return;
-    lastSync = now;
-
-    const videos = ring.querySelectorAll('video');
-    if (videos.length < 2) return;
-
-    const master = videos[0];
-    if (master.paused || master.readyState < 2) return;
-
-    for (let i = 1; i < videos.length; i += 1) {
-      const video = videos[i];
-      if (video.paused) {
-        const started = video.play();
-        if (started) started.catch(() => {});
-      } else if (Math.abs(video.currentTime - master.currentTime) > 0.15) {
-        video.currentTime = master.currentTime;
-      }
-    }
-  }
-
   function keyboardFocus() {
     const el = document.activeElement;
     if (!el || el === document.body || !cards.contains(el)) return false;
@@ -100,7 +189,6 @@
     requestAnimationFrame(frame);
     const dt = Math.min((now - lastFrame) / 1000, 0.05);
     lastFrame = now;
-    syncVideos(now);
     if (pointer !== null || reduced.matches || keyboardFocus()) return;
     velocity += (BASE_SPEED - velocity) * (1 - Math.exp(-FRICTION * dt));
     angle = wrap(angle + velocity * dt);
