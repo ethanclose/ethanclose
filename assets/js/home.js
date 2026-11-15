@@ -37,6 +37,11 @@
       const content = card.firstElementChild;
       if (!content || content.classList.contains('card__facet')) continue;
 
+      // Slicing a video would give every facet its own decoder (eight copies of the
+      // clip playing at once), so the video card stays a single flat panel: one
+      // decode, and the whole clip readable instead of eight narrow strips.
+      if (content.tagName === 'VIDEO') continue;
+
       card.classList.add('card--curved');
       card.style.setProperty('--slices', FACETS);
 
