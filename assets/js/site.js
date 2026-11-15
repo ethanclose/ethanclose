@@ -3,6 +3,7 @@
   const SIGNUP_ENDPOINT = 'https://formspree.io/f/xbgorovg';
   const POPUP_DELAY_MS = 5000;
   const SEEN_KEY = 'ec:signup-seen';
+  const AUTO_OPEN = false;   // auto-popup paused for now; the sign up link still works
 
   const store = {
     get: (k) => { try { return localStorage.getItem(k); } catch { return null; } },
@@ -110,9 +111,10 @@
     });
   });
 
-  // Auto-open once for first-time visitors (not on Contact).
+  // Auto-open once for first-time visitors (not on Contact). Paused for now with
+  // AUTO_OPEN; the header "sign up" link still opens the form on demand.
   const onContact = /(^|\/)contact(\.html)?$/.test(location.pathname);
-  if (!store.get(SEEN_KEY) && !onContact) {
+  if (AUTO_OPEN && !store.get(SEEN_KEY) && !onContact) {
     setTimeout(() => {
       if (!store.get(SEEN_KEY) && !document.body.classList.contains('overlay-open')) open();
     }, POPUP_DELAY_MS);
