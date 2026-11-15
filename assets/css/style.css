@@ -4,8 +4,10 @@
   --mute: #6b6b6b;
   --surface: #f0f0f0;
   --backdrop: rgba(255, 255, 255, 0.82);
-  --serif: "Libre Caslon Display", "Libre Caslon Text", "Adobe Caslon Pro", "Big Caslon", Georgia, serif;
-  --text: "Libre Caslon Text", "Adobe Caslon Pro", "Big Caslon", Georgia, serif;
+  /* Adobe Clean is Adobe's proprietary UI face, used when a viewer has it
+     installed; Source Sans 3 (Adobe's open-source sans) is the web fallback. */
+  --display: "Adobe Clean", "Source Sans 3", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --sans: "Adobe Clean", "Source Sans 3", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --gutter: clamp(1.25rem, 4vw, 3rem);
   color-scheme: light;
 }
@@ -36,7 +38,7 @@ body {
   flex-direction: column;
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--text);
+  font-family: var(--sans);
   font-weight: 400;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -80,7 +82,7 @@ main.home .wrap { max-width: none; padding: 0; }
 }
 
 .logo {
-  font-family: var(--text);
+  font-family: var(--sans);
   font-weight: 700;
   font-size: 1.5rem;
   letter-spacing: -0.01em;
@@ -207,7 +209,7 @@ main.home .wrap { max-width: none; padding: 0; }
 
 .hero h1 {
   margin: 0;
-  font-family: var(--serif);
+  font-family: var(--display);
   font-weight: 400;
   font-size: clamp(3.25rem, 10vw, 7.5rem);
   line-height: 1;
@@ -431,7 +433,7 @@ main.home .wrap { max-width: none; padding: 0; }
   bottom: 0;
   z-index: 1;
   padding: clamp(1rem, 2vw, 1.6rem);
-  font-family: var(--text);
+  font-family: var(--sans);
   font-weight: 400;
   font-size: clamp(1.5rem, 2.4vw, 2rem);
   text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
@@ -525,7 +527,7 @@ main.home .wrap { max-width: none; padding: 0; }
 
 .page-title {
   margin: 0;
-  font-family: var(--serif);
+  font-family: var(--display);
   font-weight: 400;
   font-size: clamp(1.75rem, 4vw, 2.75rem);
   letter-spacing: -0.02em;
@@ -552,7 +554,7 @@ main.home .wrap { max-width: none; padding: 0; }
 
 .album__title {
   margin: 0;
-  font-family: var(--serif);
+  font-family: var(--display);
   font-weight: 400;
   font-size: clamp(0.75rem, 1.5vw, 1.125rem);
   letter-spacing: -0.02em;
@@ -741,7 +743,7 @@ main.home .wrap { max-width: none; padding: 0; }
   z-index: 1;
   left: var(--gutter);
   bottom: clamp(1rem, 3vw, 2rem);
-  font-family: var(--text);
+  font-family: var(--sans);
   font-weight: 400;
   font-size: clamp(1.5rem, 3.5vw, 2.75rem);
   letter-spacing: -0.02em;
@@ -859,7 +861,7 @@ main.home .wrap { max-width: none; padding: 0; }
 
 .statement h1 {
   margin: 0;
-  font-family: var(--serif);
+  font-family: var(--display);
   font-weight: 400;
   font-size: clamp(2.75rem, 9vw, 6.5rem);
   line-height: 1;
@@ -878,7 +880,7 @@ main.home .wrap { max-width: none; padding: 0; }
   max-width: 36ch;
   margin: 0;
   padding-left: 1.1em;
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: clamp(1.35rem, 3vw, 2.1rem);
   line-height: 1.25;
   letter-spacing: -0.01em;
@@ -907,7 +909,7 @@ main.home .wrap { max-width: none; padding: 0; }
 .contact h1,
 .contact h2 {
   margin: 0 0 1.25rem;
-  font-family: var(--serif);
+  font-family: var(--display);
   font-weight: 400;
   font-size: clamp(2.5rem, 7vw, 5rem);
   line-height: 1;
@@ -1060,7 +1062,7 @@ main.home .wrap { max-width: none; padding: 0; }
 
 .modal__panel h2 {
   margin: 0 2rem 0.75rem 0;
-  font-family: var(--serif);
+  font-family: var(--display);
   font-weight: 400;
   font-size: 2rem;
   letter-spacing: -0.02em;
