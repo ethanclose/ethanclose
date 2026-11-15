@@ -148,6 +148,17 @@ main.home .wrap { max-width: none; padding: 0; }
   -webkit-user-select: none;
 }
 
+/* Phones in portrait: the drum grows by a quarter (60vw -> 75vw) so the front cards
+   fill more of the screen. The height cap scales with it (41.5vh -> 51.9vh) so short
+   viewports grow too; --cw follows the new --d on its own. Landscape phones keep the
+   default, as the drum would no longer fit between the header and footer. */
+@media (max-width: 760px) and (orientation: portrait) {
+  .cards {
+    --d: 75vw;
+    --ch: min(51.9vh, calc(var(--cw) * 5 / 3));
+  }
+}
+
 .cards.is-dragging { cursor: grabbing; }
 
 .cards__ring {
