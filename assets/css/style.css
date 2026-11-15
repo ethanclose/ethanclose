@@ -725,6 +725,29 @@ main.home .wrap { max-width: none; padding: 0; }
 
 .statement { padding: clamp(3rem, 9vw, 7rem) 0; }
 
+/* Timeline gets its own column with the bird badge (the favicon file, already
+   cached by the tab icon) alongside it. The badge is decorative, so it is hidden
+   from assistive tech. */
+.about {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: clamp(1.5rem, 5vw, 4rem);
+  padding-block: clamp(3rem, 9vw, 7rem);
+}
+
+.about .statement { padding: 0; }
+
+.about__mark { width: clamp(8rem, 26vw, 15rem); }
+
+.about__mark img { width: 100%; height: auto; }
+
+@media (max-width: 760px) {
+  /* Stack the badge above the timeline on narrow screens. */
+  .about { grid-template-columns: 1fr; gap: 1.75rem; }
+  .about__mark { order: -1; width: clamp(8rem, 45vw, 12rem); }
+}
+
 .statement h1 {
   margin: 0;
   font-family: var(--serif);
