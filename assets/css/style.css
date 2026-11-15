@@ -123,13 +123,19 @@ main.home .wrap { max-width: none; padding: 0; }
 }
 
 /* Home sections sit on a 3D cylinder. Its diameter is 60vw, a third smaller than the
-   old 90vw, and the height cap is scaled by the same two-thirds (62vh -> 41.5vh). Each
-   card is 1.3 x the arc spacing (90 degrees) wide, and keeps the 3:5 card ratio unless
-   the viewport height caps it. */
+   old 90vw, and the height cap is scaled by the same two-thirds (62vh -> 41.5vh).
+   Cards keep the 3:5 card ratio unless the viewport height caps it.
+
+   The cylinder is a real one, not a box with rounded-off corners: each card wraps
+   --arc (80 degrees) of the drum, which leaves a 10 degree gap to its neighbour. --cw
+   is that arc unrolled, so it is also the full width of the card's image. home.js
+   slices each card into narrow facets (see .card__facet) to bend it round the arc;
+   until it runs a card is still a single flat panel. */
 .cards {
   --d: 60vw;
   --r: calc(var(--d) / 2);
-  --cw: calc(var(--r) * 1.3);
+  --arc: 80deg;
+  --cw: calc(var(--r) * 1.4);   /* arc length of --arc at radius --r */
   --ch: min(41.5vh, calc(var(--cw) * 5 / 3));
   position: relative;
   width: 100%;
@@ -165,6 +171,10 @@ main.home .wrap { max-width: none; padding: 0; }
 }
 
 .card {
+  --slices: 1;
+  --step: calc(var(--arc) / var(--slices));
+  --sw: calc(var(--cw) / var(--slices));       /* width of one facet */
+  --base: calc(var(--i) * 90deg + 45deg);      /* 45deg offset: two cards face the viewer */
   position: absolute;
   top: calc(var(--ch) / -2);
   left: calc(var(--cw) / -2);
@@ -177,8 +187,53 @@ main.home .wrap { max-width: none; padding: 0; }
   text-decoration: none;
   container-type: size;
   backface-visibility: hidden;
-  /* Offset by 45 degrees so two cards face the viewer at rest. */
-  transform: rotateY(calc(var(--i) * 90deg + 45deg)) translateZ(var(--r));
+  transform: rotateY(var(--base)) translateZ(var(--r));
+}
+
+/* Once home.js has sliced a card, the <a> is just an anchor on the cylinder's axis:
+   zero-sized and untransformed, with the facets carrying all of the geometry. */
+.card--curved {
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  overflow: visible;
+  background: none;
+  container-type: normal;
+  transform: none;
+  /* The facets live in the ring's 3D space, not in the <a>'s flat plane. */
+  transform-style: preserve-3d;
+}
+
+/* One facet of the card: a narrow plane tangent to the cylinder at its own angle, so
+   a row of them approximates the arc instead of cutting across it. The extra 1px of
+   width overlaps its neighbour and hides the seam between them. */
+.card__facet {
+  position: absolute;
+  top: calc(var(--ch) / -2);
+  left: calc(var(--sw) / -2);
+  width: calc(var(--sw) + 1px);
+  height: var(--ch);
+  overflow: hidden;
+  background: var(--ink);
+  backface-visibility: hidden;
+  transform:
+    rotateY(calc(var(--base) + (var(--j) + 0.5) * var(--step) - var(--arc) / 2))
+    translateZ(var(--r));
+}
+
+/* The stage is the whole unrolled card. --j slides it across so that each facet clips
+   out its own vertical strip of the media, and keeps the image in one piece. */
+.card__stage {
+  position: absolute;
+  top: 0;
+  left: calc(var(--j) * var(--sw) * -1);
+  width: var(--cw);
+  height: var(--ch);
+  container-type: size;
+  /* Hover scales the media about the card's centre, not the strip's. */
+  transform-origin: calc(50% + var(--j) * 100% / var(--slices)) 50%;
+  transition: transform 0.6s ease;
 }
 
 .card img,
@@ -186,8 +241,8 @@ main.home .wrap { max-width: none; padding: 0; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s ease, opacity 0.3s ease;
   opacity: 0.88;
+  transition: transform 0.6s ease, opacity 0.3s ease;
 }
 
 /* Cover-crop a 16:9 embed into the 3:5 card, centred. */
@@ -202,7 +257,9 @@ main.home .wrap { max-width: none; padding: 0; }
   pointer-events: none;
 }
 
-.card::after {
+/* The dimming veil sits on every facet so it follows the curve. */
+.card::after,
+.card__facet::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -223,9 +280,25 @@ main.home .wrap { max-width: none; padding: 0; }
 }
 
 .card:not(.card--about):hover img,
-.card:not(.card--about):focus-visible img { transform: scale(1.04); opacity: 1; }
+.card:not(.card--about):focus-visible img { opacity: 1; }
 
-.card:hover::after { background: rgba(0, 0, 0, 0.05); }
+.card:hover .card__stage,
+.card:focus-visible .card__stage { transform: scale(1.04); }
+
+/* Without JS there are no facets to scale, so the media zooms on its own. */
+.card:not(.card--curved):not(.card--about):hover img,
+.card:not(.card--curved):not(.card--about):focus-visible img { transform: scale(1.04); }
+
+.card:hover::after,
+.card:hover .card__facet::after { background: rgba(0, 0, 0, 0.05); }
+
+/* A curved card's <a> has no box of its own to outline, so outline its facets. */
+.card--curved:focus-visible { outline: none; }
+
+.card--curved:focus-visible .card__facet {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
 
 /* About card: cross-fades the 4th Pumpkin/Mancha frame (mouth shut) over the 3rd
    (mouth open), so the cat reads as meowing. Both are crops of the same shot, so the
@@ -250,7 +323,11 @@ main.home .wrap { max-width: none; padding: 0; }
 }
 
 .card--about:hover .card__frames,
-.card--about:focus-visible .card__frames { transform: scale(1.04); opacity: 1; }
+.card--about:focus-visible .card__frames { opacity: 1; }
+
+/* Same fallback as the images above: zoom the frames when there are no facets. */
+.card--about:not(.card--curved):hover .card__frames,
+.card--about:not(.card--curved):focus-visible .card__frames { transform: scale(1.04); }
 
 .card--about img { position: absolute; opacity: 1; transition: none; }
 
