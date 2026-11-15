@@ -653,7 +653,7 @@ main.home .wrap { max-width: none; padding: 0; }
 .contact h2 { font-size: clamp(1.75rem, 3.5vw, 2.5rem); font-weight: 400; letter-spacing: -0.02em; }
 
 .contact dl { margin: 0; }
-.contact dt { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--mute); }
+.contact dt { font-size: 0.8rem; text-transform: lowercase; letter-spacing: 0.12em; color: var(--mute); }
 .contact dd { margin: 0.15rem 0 1.5rem; font-size: 1.25rem; }
 
 /* Left column: contact details on top, seagull filling the space below them.
@@ -704,7 +704,7 @@ main.home .wrap { max-width: none; padding: 0; }
 
 .message-form { display: grid; gap: 0.35rem; }
 
-.message-form label { margin-top: 0.75rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--mute); }
+.message-form label { margin-top: 0.75rem; font-size: 0.8rem; text-transform: lowercase; letter-spacing: 0.12em; color: var(--mute); }
 
 .message-form input[type="text"]:not(.signup__trap),
 .message-form input[type="email"],
@@ -729,7 +729,8 @@ main.home .wrap { max-width: none; padding: 0; }
 
 .message-form .btn:disabled { opacity: 0.5; cursor: progress; }
 
-.fs-error { min-height: 1.1em; font-size: 0.85rem; }
+/* Formspree injects capitalized copy ("Thank you!", "...Please try again."). */
+.fs-error { min-height: 1.1em; font-size: 0.85rem; text-transform: lowercase; }
 
 .fs-status:empty { display: none; }
 
@@ -741,6 +742,7 @@ main.home .wrap { max-width: none; padding: 0; }
   background: transparent !important;
   color: var(--ink) !important;
   font-size: 0.95rem;
+  text-transform: lowercase;
 }
 
 .fs-error { color: var(--ink) !important; }
