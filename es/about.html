@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Acerca de — ethan close</title>
+  <link rel="icon" href="/assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <script>
+    (() => {
+      let theme;
+      try { theme = localStorage.getItem('ec:theme'); } catch { /* storage unavailable */ }
+      if (theme !== 'light' && theme !== 'dark') {
+        theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
+  <link rel="alternate" hreflang="en" href="/about.html">
+  <link rel="alternate" hreflang="es" href="/es/about.html">
+  <link rel="alternate" hreflang="x-default" href="/about.html">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="index.html">ethan close</a>
+    <nav class="nav" aria-label="Principal">
+      <a href="images.html">fotos</a>
+      <a href="videos.html">videos</a>
+      <a href="about.html" aria-current="page">acerca de</a>
+      <a href="contact.html">contacto</a>
+      <a href="contact.html#signup" class="nav__signup" data-signup-trigger>suscribirse</a>
+
+    </nav>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <div class="about">
+        <section class="statement">
+          <ul class="about-list">
+            <li>1991-1996 : Ingeniería Mecánica y Escritura Expositiva</li>
+            <li>1996-2023 : <a href="https://www.linkedin.com/in/ethan-close-test-architect/" target="_blank" rel="noopener">Arquitecto de Software y Gerente de Personas</a></li>
+            <li>2023-presente : Arte de Performance en <a href="https://www.baypong.org/en/location/un-plaza" target="_blank" rel="noopener">UN Plaza</a> y <a href="https://www.baypong.org/en/location/union-square" target="_blank" rel="noopener">Union Square</a></li>
+            <li>2025-presente : Voluntario/Entrenador en <a href="https://www.oaklandca.gov/Community/Senior-Disability-Services/Senior-Centers/North-Oakland-Senior-Center-NOSC" target="_blank" rel="noopener">North Oakland Senior Center</a></li>
+            <li>2026 : Fundador de <a href="https://baypong.org" target="_blank" rel="noopener">Bay Pong</a></li>
+            <li>2026 : Mi primer canal : <a href="https://www.youtube.com/@oaklandojos/videos" target="_blank" rel="noopener">Oakland Ojos</a></li>
+          </ul>
+        </section>
+
+        <div class="about__mark" aria-hidden="true">
+          <img src="/assets/birdlogo-blue-shade.png" alt="" width="2048" height="2048" decoding="async">
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">&copy; 2026 ethan close</footer>
+  <div class="page-tools">
+        <div class="lang-switch" role="group" aria-label="Idioma">
+          <a href="../about.html" lang="en" hreflang="en" data-lang-link="en">EN</a>
+          <span aria-hidden="true">|</span>
+          <a href="about.html" lang="es" hreflang="es" aria-current="true">ES</a>
+        </div>
+        <button class="theme-toggle" type="button" aria-label="Cambiar al modo oscuro" aria-pressed="false" title="Cambiar al modo oscuro">
+          <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path>
+          </svg>
+          <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+          </svg>
+        </button>
+  </div>
+  <script src="/assets/js/i18n.js"></script>
+  <script src="/assets/js/site.js"></script>
+</body>
+</html>

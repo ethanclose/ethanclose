@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>contacto — ethan close</title>
+  <link rel="icon" href="/assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <script>
+    (() => {
+      let theme;
+      try { theme = localStorage.getItem('ec:theme'); } catch { /* storage unavailable */ }
+      if (theme !== 'light' && theme !== 'dark') {
+        theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
+  <link rel="alternate" hreflang="en" href="/contact.html">
+  <link rel="alternate" hreflang="es" href="/es/contact.html">
+  <link rel="alternate" hreflang="x-default" href="/contact.html">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="index.html">ethan close</a>
+    <nav class="nav" aria-label="Principal">
+      <a href="images.html">fotos</a>
+      <a href="videos.html">videos</a>
+      <a href="about.html">acerca de</a>
+      <a href="contact.html" aria-current="page">contacto</a>
+      <a href="contact.html#signup" class="nav__signup" data-signup-trigger>suscribirse</a>
+
+    </nav>
+  </header>
+
+  <main>
+    <div class="wrap contact">
+      <div class="contact__info">
+        <section>
+          <dl>
+            <dt>correo</dt>
+            <dd><a href="mailto:hello@ethanclose.com">hello@ethanclose.com</a></dd>
+            <dt>ubicado en</dt>
+            <dd>oakland, california</dd>
+          </dl>
+        </section>
+
+        <div class="contact__seagull" aria-hidden="true">
+          <img src="/assets/home/seagull.jpg" alt="" decoding="async">
+        </div>
+      </div>
+
+      <div class="contact__side">
+        <section id="message">
+          <h2>envía un mensaje</h2>
+          <div class="fs-status" data-fs-success role="status"></div>
+          <div class="fs-status" data-fs-error role="alert"></div>
+          <form id="contact-form" class="message-form" novalidate>
+            <label for="cf-name">nombre</label>
+            <input type="text" id="cf-name" name="name" autocomplete="name" data-fs-field>
+            <span class="fs-error" data-fs-error="name"></span>
+
+            <label for="cf-email">correo</label>
+            <input type="email" id="cf-email" name="email" autocomplete="email" required data-fs-field>
+            <span class="fs-error" data-fs-error="email"></span>
+
+            <label for="cf-message">mensaje</label>
+            <textarea id="cf-message" name="message" rows="5" required data-fs-field></textarea>
+            <span class="fs-error" data-fs-error="message"></span>
+
+            <input type="text" name="_gotcha" class="signup__trap" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <button class="btn" type="submit" data-fs-submit-btn>enviar</button>
+          </form>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">&copy; 2026 ethan close</footer>
+  <div class="page-tools">
+        <div class="lang-switch" role="group" aria-label="Idioma">
+          <a href="../contact.html" lang="en" hreflang="en" data-lang-link="en">EN</a>
+          <span aria-hidden="true">|</span>
+          <a href="contact.html" lang="es" hreflang="es" aria-current="true">ES</a>
+        </div>
+        <button class="theme-toggle" type="button" aria-label="Cambiar al modo oscuro" aria-pressed="false" title="Cambiar al modo oscuro">
+          <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path>
+          </svg>
+          <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+          </svg>
+        </button>
+  </div>
+  <script src="/assets/js/i18n.js"></script>
+  <script src="/assets/js/site.js"></script>
+  <script>
+    window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+    formspree('initForm', { formElement: '#contact-form', formId: 'maeowoal' });
+  </script>
+  <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+</body>
+</html>

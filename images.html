@@ -20,6 +20,9 @@
       document.documentElement.dataset.theme = theme;
     })();
   </script>
+  <link rel="alternate" hreflang="en" href="/images.html">
+  <link rel="alternate" hreflang="es" href="/es/images.html">
+  <link rel="alternate" hreflang="x-default" href="/images.html">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -31,21 +34,30 @@
       <a href="about.html">about</a>
       <a href="contact.html">contact</a>
       <a href="contact.html#signup" class="nav__signup" data-signup-trigger>sign up</a>
-      <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false" title="Switch to dark mode">
-        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path>
-        </svg>
-        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="4"></circle>
-          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
-        </svg>
-      </button>
+
     </nav>
   </header>
 
   <main id="app"><p class="status">Loading…</p></main>
 
   <footer class="site-footer">&copy; 2026 ethan close</footer>
+  <div class="page-tools">
+        <div class="lang-switch" role="group" aria-label="Language">
+          <a href="images.html" lang="en" hreflang="en" aria-current="true">EN</a>
+          <span aria-hidden="true">|</span>
+          <a href="es/images.html" lang="es" hreflang="es" data-lang-link="es">ES</a>
+        </div>
+        <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false" title="Switch to dark mode">
+          <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path>
+          </svg>
+          <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+          </svg>
+        </button>
+  </div>
+  <script src="assets/js/i18n.js"></script>
   <script src="assets/js/site.js"></script>
   <script src="assets/js/images.js"></script>
 </body>
