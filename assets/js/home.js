@@ -1,3 +1,30 @@
+// Home page: serve a lighter clip to narrow screens and stop decoding it in
+// background tabs. The smaller encode cuts the decoded pixel rate by roughly
+// half, which keeps playback smooth while the card ring rotates on a phone.
+(() => {
+  const video = document.querySelector('.card__video');
+  if (!video) return;
+
+  const wide = matchMedia('(min-width: 761px)');
+  const DESKTOP_SRC = 'assets/videos/crow-staging-alcatraz.mp4';
+  const MOBILE_SRC = 'assets/videos/crow-staging-alcatraz-mobile.mp4';
+
+  function syncSource() {
+    const src = wide.matches ? DESKTOP_SRC : MOBILE_SRC;
+    if (video.getAttribute('src') === src) return;
+    video.src = src;
+    video.play().catch(() => {});
+  }
+
+  syncSource();
+  wide.addEventListener('change', syncSource);
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) video.pause();
+    else video.play().catch(() => {});
+  });
+})();
+
 // Home page: drag the section carousel to spin it. A flick speeds the ring up;
 // after release it coasts and eases back to the slow default rotation.
 (() => {

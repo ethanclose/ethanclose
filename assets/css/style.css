@@ -181,8 +181,7 @@ main.home .wrap { max-width: none; padding: 0; }
   transform: rotateY(calc(var(--i) * 90deg + 45deg)) translateZ(var(--r));
 }
 
-.card img,
-.card__video {
+.card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -190,14 +189,18 @@ main.home .wrap { max-width: none; padding: 0; }
   opacity: 0.88;
 }
 
-/* Cover-crop a 16:9 embed into the 3:5 card, centred. */
+/* The clip is portrait like the card, so it fills the card exactly. Keeping the
+   video layer card-sized avoids re-sampling a layer that is wider than the card
+   on every frame of the ring's rotation; the opaque video plus a slightly darker
+   scrim composites more cheaply than a translucent video layer. */
+.card--video::after { background: rgba(0, 0, 0, 0.28); }
+
 .card__video {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: max(100cqw, 177.78cqh);
-  height: max(100cqh, 56.25cqw);
-  transform: translate(-50%, -50%);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   border: 0;
   pointer-events: none;
 }
