@@ -725,9 +725,8 @@ main.home .wrap { max-width: none; padding: 0; }
 
 .statement { padding: clamp(3rem, 9vw, 7rem) 0; }
 
-/* Timeline gets its own column with the bird badge (the favicon file, already
-   cached by the tab icon) alongside it. The badge is decorative, so it is hidden
-   from assistive tech. */
+/* Timeline gets its own column with the heron logo alongside it. The logo is
+   decorative, so it is hidden from assistive tech. */
 .about {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -743,9 +742,9 @@ main.home .wrap { max-width: none; padding: 0; }
 .about__mark img { width: 100%; height: auto; }
 
 @media (max-width: 760px) {
-  /* Stack the badge above the timeline on narrow screens. */
+  /* Stack the logo above the timeline on narrow screens, centred. */
   .about { grid-template-columns: 1fr; gap: 1.75rem; }
-  .about__mark { order: -1; width: clamp(8rem, 45vw, 12rem); }
+  .about__mark { order: -1; justify-self: center; width: clamp(8rem, 45vw, 12rem); }
 }
 
 .statement h1 {
