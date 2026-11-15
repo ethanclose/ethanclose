@@ -5,7 +5,14 @@
   const { t, albumTitle } = window.EC_I18N;
 
   const esc = (s) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const src = (path) => encodeURI(path.startsWith('/') ? path : `/${path}`).replace(/#/g, '%23').replace(/\?/g, '%3F');
+  // Photos live in R2 behind the public images.ethanclose.com domain. Manifest
+  // paths stay repo-relative; map assets/images/<album>/<file> to /images/<album>/<file>.
+  const MEDIA_BASE = 'https://images.ethanclose.com';
+  const src = (path) => {
+    if (/^https?:\/\//.test(path)) return path;
+    const key = path.replace(/^\/?assets\/images\//, 'images/');
+    return `${MEDIA_BASE}/${encodeURI(key).replace(/#/g, '%23').replace(/\?/g, '%3F')}`;
+  };
 
   async function loadAlbums() {
     const res = await fetch('/assets/images/manifest.json', { cache: 'no-cache' });
