@@ -12,6 +12,13 @@
     return (await res.json()).albums || [];
   }
 
+  // Albums whose cover is their final photo rather than the first. The heron album
+  // leads with its last frame, which is also the photo used on the home page.
+  const LAST_PHOTO_COVERS = new Set(['Night Heron']);
+  const albumCover = (album) => (LAST_PHOTO_COVERS.has(album.title)
+    ? album.images[album.images.length - 1]
+    : album.images[0]);
+
   function renderAlbums(albums) {
     document.title = 'Photos — ethan close';
     app.innerHTML = `<div class="albums">${albums.map((a) => `
@@ -20,7 +27,7 @@
           <h2 class="album__title">${esc(a.title)}</h2>
           <span class="album__count">${a.images.length} ${a.images.length === 1 ? 'photo' : 'photos'}</span>
         </div>
-        <div class="album__cover"><img src="${src(a.images[0])}" alt="${esc(a.title)}" decoding="async"></div>
+        <div class="album__cover"><img src="${src(albumCover(a))}" alt="${esc(a.title)}" decoding="async"></div>
       </a>`).join('')}</div>`;
   }
 
