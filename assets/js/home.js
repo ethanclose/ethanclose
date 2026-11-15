@@ -10,6 +10,7 @@
   const MAX_SPEED = 720;          // deg/s
   const FRICTION = 1.5;           // 1/s: how quickly the spin settles to BASE_SPEED
   const DRAG_THRESHOLD = 6;       // px before movement counts as a drag
+  const FACETS = 8;               // vertical strips each card is bent into
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let angle = 0;
@@ -22,9 +23,67 @@
   let lastMove = 0;
   let moved = false;
   let suppressUntil = 0;
+  let lastSync = 0;
 
   const wrap = (a) => ((a + 180) % 360 + 360) % 360 - 180;
   const render = () => { ring.style.transform = `rotateY(${angle}deg)`; };
+
+  // A card is authored once, holding a single image/video. Bending it round the
+  // cylinder means repeating that content into narrow facets, each of which shows one
+  // vertical strip of it: the <a> collapses to an anchor on the axis and every facet
+  // is placed on the arc (see .card__facet in style.css).
+  function curveCards() {
+    for (const card of ring.querySelectorAll('.card')) {
+      const content = card.firstElementChild;
+      if (!content || content.classList.contains('card__facet')) continue;
+
+      card.classList.add('card--curved');
+      card.style.setProperty('--slices', FACETS);
+
+      for (let j = 0; j < FACETS; j += 1) {
+        const facet = document.createElement('div');
+        facet.className = 'card__facet';
+        facet.style.setProperty('--j', j);
+
+        const stage = document.createElement('div');
+        stage.className = 'card__stage';
+        stage.append(content.cloneNode(true));
+
+        facet.append(stage);
+        card.append(facet);
+      }
+
+      content.remove();
+    }
+
+    for (const video of ring.querySelectorAll('video')) {
+      const started = video.play();
+      if (started) started.catch(() => {});
+    }
+  }
+
+  // Every facet carries its own copy of the video, so nudge the copies back onto the
+  // first one's clock if they have drifted apart.
+  function syncVideos(now) {
+    if (now - lastSync < 1000) return;
+    lastSync = now;
+
+    const videos = ring.querySelectorAll('video');
+    if (videos.length < 2) return;
+
+    const master = videos[0];
+    if (master.paused || master.readyState < 2) return;
+
+    for (let i = 1; i < videos.length; i += 1) {
+      const video = videos[i];
+      if (video.paused) {
+        const started = video.play();
+        if (started) started.catch(() => {});
+      } else if (Math.abs(video.currentTime - master.currentTime) > 0.15) {
+        video.currentTime = master.currentTime;
+      }
+    }
+  }
 
   function keyboardFocus() {
     const el = document.activeElement;
@@ -36,6 +95,7 @@
     requestAnimationFrame(frame);
     const dt = Math.min((now - lastFrame) / 1000, 0.05);
     lastFrame = now;
+    syncVideos(now);
     if (pointer !== null || reduced.matches || keyboardFocus()) return;
     velocity += (BASE_SPEED - velocity) * (1 - Math.exp(-FRICTION * dt));
     angle = wrap(angle + velocity * dt);
@@ -101,6 +161,7 @@
     velocity = reduced.matches ? 0 : BASE_SPEED;
   });
 
+  curveCards();
   cards.classList.add('cards--ready');
   render();
   lastFrame = performance.now();
