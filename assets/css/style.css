@@ -157,7 +157,9 @@ main.home .wrap { max-width: none; padding: 0; }
 .page-tools {
   position: fixed;
   right: var(--gutter);
-  bottom: var(--gutter);
+  /* Match the footer's 2rem bottom padding so the pill's bottom edge lines up
+     with the bottom of the copyright line. */
+  bottom: 2rem;
   z-index: 50;
   display: flex;
   align-items: center;
