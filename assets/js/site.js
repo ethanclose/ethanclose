@@ -5,6 +5,7 @@
   const toggle = document.querySelector('.theme-toggle');
   const query = matchMedia('(prefers-color-scheme: dark)');
   const KEY = 'ec:theme';
+  const { t } = window.EC_I18N || { t: (key) => key };
 
   const saved = () => {
     try { return localStorage.getItem(KEY); } catch { return null; }
@@ -19,8 +20,8 @@
 
     const dark = theme === 'dark';
     toggle.setAttribute('aria-pressed', String(dark));
-    toggle.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
-    toggle.title = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    toggle.setAttribute('aria-label', t(dark ? 'theme.light' : 'theme.dark'));
+    toggle.title = t(dark ? 'theme.light' : 'theme.dark');
   }
 
   apply(root.dataset.theme === 'dark' ? 'dark' : 'light', false);
@@ -37,12 +38,23 @@
   });
 })();
 
+// Language switch: carry the current album query and #signup across languages.
+(() => {
+  for (const link of document.querySelectorAll('[data-lang-link]')) {
+    const url = new URL(link.getAttribute('href'), location.href);
+    url.search = location.search;
+    url.hash = location.hash;
+    link.href = url.href;
+  }
+})();
+
 // Shared behaviour: newsletter signup form (inline + popup), submitted to Formspree.
 (() => {
   const SIGNUP_ENDPOINT = 'https://formspree.io/f/xbgorovg';
   const POPUP_DELAY_MS = 5000;
   const SEEN_KEY = 'ec:signup-seen';
   const AUTO_OPEN = false;   // auto-popup paused for now; the sign up link still works
+  const { t } = window.EC_I18N || { t: (key) => key };
 
   const store = {
     get: (k) => { try { return localStorage.getItem(k); } catch { return null; } },
@@ -53,10 +65,10 @@
     return `
       <form class="signup" action="${SIGNUP_ENDPOINT}" method="post" novalidate>
         <div class="signup__row">
-          <input type="email" name="email" aria-label="Email address" placeholder="Email address" autocomplete="email" required>
-          <button class="btn" type="submit">Subscribe</button>
+          <input type="email" name="email" aria-label="${t('signup.email')}" placeholder="${t('signup.email')}" autocomplete="email" required>
+          <button class="btn" type="submit">${t('signup.subscribe')}</button>
         </div>
-        <input type="hidden" name="_subject" value="New newsletter signup">
+        <input type="hidden" name="_subject" value="${t('signup.subject')}">
         <div class="signup__trap" aria-hidden="true">
           <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" value="">
         </div>
@@ -72,12 +84,12 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!email.checkValidity() || !email.value.trim()) {
-        note.textContent = 'Please enter a valid email address.';
+        note.textContent = t('signup.invalid');
         email.focus();
         return;
       }
       button.disabled = true;
-      note.textContent = 'Subscribing…';
+      note.textContent = t('signup.subscribing');
       try {
         const res = await fetch(SIGNUP_ENDPOINT, {
           method: 'POST',
@@ -85,16 +97,16 @@
           body: new FormData(form),
         });
         if (res.ok) {
-          note.textContent = 'Thanks — you’re on the list.';
+          note.textContent = t('signup.success');
           email.value = '';
           store.set(SEEN_KEY, 'subscribed');
           if (onSuccess) setTimeout(onSuccess, 1500);
         } else {
           const data = await res.json().catch(() => ({}));
-          note.textContent = data.errors?.map((err) => err.message).join(' ') || 'Something went wrong. Please try again.';
+          note.textContent = data.errors?.map((err) => err.message).join(' ') || t('signup.error');
         }
       } catch {
-        note.textContent = 'Network error. Please try again.';
+        note.textContent = t('signup.network');
       } finally {
         button.disabled = false;
       }
@@ -108,9 +120,9 @@
   modal.innerHTML = `
     <div class="modal__backdrop" data-close></div>
     <div class="modal__panel" role="dialog" aria-labelledby="signup-title">
-      <button class="icon-btn modal__close" type="button" aria-label="Close" data-close>&times;</button>
-      <h2 id="signup-title">Stay in the loop</h2>
-      <p>New photos and videos, now and then. No spam.</p>
+      <button class="icon-btn modal__close" type="button" aria-label="${t('signup.close')}" data-close>&times;</button>
+      <h2 id="signup-title">${t('signup.title')}</h2>
+      <p>${t('signup.body')}</p>
       <div data-popup-form></div>
     </div>`;
   document.body.append(modal);
@@ -158,4 +170,40 @@
       if (!store.get(SEEN_KEY) && !document.body.classList.contains('overlay-open')) open();
     }, POPUP_DELAY_MS);
   }
+})();
+
+// Formspree injects English status/validation copy; translate the common messages
+// on the Spanish pages.
+(() => {
+  if (!window.EC_I18N || window.EC_I18N.lang !== 'es') return;
+
+  const messages = {
+    'Thank you!': 'Gracias.',
+    'An unexpected error occurred. Please try again.': 'Ha ocurrido un error inesperado. Inténtalo de nuevo.',
+    'There was an error submitting the form.': 'No se pudo enviar el formulario.',
+    'Please enter a valid email address.': 'Introduce un correo electrónico válido.',
+    'This field is required.': 'Este campo es obligatorio.',
+    'Please fill out this field.': 'Completa este campo.',
+  };
+
+  function translate(node) {
+    const text = node.textContent.trim();
+    const match = messages[text];
+    if (match) node.textContent = match;
+  }
+
+  const targets = document.querySelectorAll('.fs-status, .fs-error');
+  targets.forEach(translate);
+  if (!targets.length) return;
+
+  const observer = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.type === 'characterData') translate(mutation.target);
+      for (const node of mutation.addedNodes) {
+        if (node.nodeType === Node.TEXT_NODE || node.nodeType === Node.ELEMENT_NODE) translate(node);
+      }
+    }
+  });
+
+  targets.forEach((node) => observer.observe(node, { childList: true, subtree: true, characterData: true }));
 })();

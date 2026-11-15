@@ -2,12 +2,13 @@
 (() => {
   const app = document.getElementById('app');
   const MAX_ZOOM = 6;
+  const { t, albumTitle } = window.EC_I18N;
 
   const esc = (s) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const src = (path) => encodeURI(path).replace(/#/g, '%23').replace(/\?/g, '%3F');
+  const src = (path) => encodeURI(path.startsWith('/') ? path : `/${path}`).replace(/#/g, '%23').replace(/\?/g, '%3F');
 
   async function loadAlbums() {
-    const res = await fetch('assets/images/manifest.json', { cache: 'no-cache' });
+    const res = await fetch('/assets/images/manifest.json', { cache: 'no-cache' });
     if (!res.ok) throw new Error(`manifest ${res.status}`);
     return (await res.json()).albums || [];
   }
@@ -20,30 +21,31 @@
     : album.images[0]);
 
   function renderAlbums(albums) {
-    document.title = 'Photos — ethan close';
+    document.title = t('photos.title');
     app.innerHTML = `<div class="albums">${albums.map((a) => `
       <a class="album" href="images.html?album=${encodeURIComponent(a.title)}">
         <div class="album__head">
-          <h2 class="album__title">${esc(a.title)}</h2>
-          <span class="album__count">${a.images.length} ${a.images.length === 1 ? 'photo' : 'photos'}</span>
+          <h2 class="album__title">${esc(albumTitle(a.title))}</h2>
+          <span class="album__count">${a.images.length} ${t(a.images.length === 1 ? 'photos.photo' : 'photos.photos')}</span>
         </div>
-        <div class="album__cover"><img src="${src(albumCover(a))}" alt="${esc(a.title)}" decoding="async"></div>
+        <div class="album__cover"><img src="${src(albumCover(a))}" alt="${esc(albumTitle(a.title))}" decoding="async"></div>
       </a>`).join('')}</div>`;
   }
 
   function renderAlbum(album) {
-    document.title = `${album.title} — ethan close`;
+    const title = albumTitle(album.title);
+    document.title = t('photos.albumTitle', { title });
     app.innerHTML = `
       <div class="album-view">
-        <a class="back" href="images.html">&larr; All albums</a>
-        <h1 class="page-title">${esc(album.title)}</h1>
+        <a class="back" href="images.html">&larr; ${t('photos.all')}</a>
+        <h1 class="page-title">${esc(title)}</h1>
         ${album.images.map((p, i) => `
-          <button class="photo" type="button" data-index="${i}" aria-label="Open photo ${i + 1} of ${album.images.length}">
-            <img src="${src(p)}" alt="${esc(album.title)} — photo ${i + 1}" loading="${i < 2 ? 'eager' : 'lazy'}" decoding="async">
+          <button class="photo" type="button" data-index="${i}" aria-label="${t('photos.open', { n: i + 1, total: album.images.length })}">
+            <img src="${src(p)}" alt="${t('photos.alt', { title: esc(title), n: i + 1 })}" loading="${i < 2 ? 'eager' : 'lazy'}" decoding="async">
           </button>`).join('')}
       </div>`;
 
-    const lightbox = createLightbox(album.images.map(src), album.title);
+    const lightbox = createLightbox(album.images.map(src), title);
     app.querySelectorAll('.photo').forEach((btn) => {
       btn.addEventListener('click', () => lightbox.open(Number(btn.dataset.index), btn));
     });
@@ -54,19 +56,19 @@
     el.className = 'lightbox';
     el.hidden = true;
     el.setAttribute('role', 'dialog');
-    el.setAttribute('aria-label', `${title} photo viewer`);
+    el.setAttribute('aria-label', t('photos.viewer', { title }));
     el.innerHTML = `
       <div class="lightbox__stage"><img class="lightbox__img" alt="" draggable="false"></div>
       <div class="lightbox__bar">
         <span class="lightbox__count"></span>
         <div class="lightbox__tools">
-          <button class="icon-btn" type="button" data-act="out" aria-label="Zoom out">&minus;</button>
-          <button class="icon-btn" type="button" data-act="in" aria-label="Zoom in">+</button>
-          <button class="icon-btn" type="button" data-act="close" aria-label="Close">&times;</button>
+          <button class="icon-btn" type="button" data-act="out" aria-label="${t('lightbox.zoomOut')}">&minus;</button>
+          <button class="icon-btn" type="button" data-act="in" aria-label="${t('lightbox.zoomIn')}">+</button>
+          <button class="icon-btn" type="button" data-act="close" aria-label="${t('lightbox.close')}">&times;</button>
         </div>
       </div>
-      <button class="icon-btn lightbox__nav lightbox__nav--prev" type="button" data-act="prev" aria-label="Previous photo">&lsaquo;</button>
-      <button class="icon-btn lightbox__nav lightbox__nav--next" type="button" data-act="next" aria-label="Next photo">&rsaquo;</button>`;
+      <button class="icon-btn lightbox__nav lightbox__nav--prev" type="button" data-act="prev" aria-label="${t('lightbox.prev')}">&lsaquo;</button>
+      <button class="icon-btn lightbox__nav lightbox__nav--next" type="button" data-act="next" aria-label="${t('lightbox.next')}">&rsaquo;</button>`;
     document.body.append(el);
 
     const stage = el.querySelector('.lightbox__stage');
@@ -118,7 +120,7 @@
       img.style.transform = '';
       el.classList.remove('is-zoomed');
       img.src = urls[index];
-      img.alt = `${title} — photo ${index + 1}`;
+      img.alt = t('photos.alt', { title, n: index + 1 });
       count.textContent = `${index + 1} / ${urls.length}`;
       navBtns.forEach((b) => { b.hidden = urls.length < 2; });
     }
@@ -224,10 +226,10 @@
       const album = wanted && albums.find((a) => a.title === wanted);
       if (album) renderAlbum(album);
       else if (albums.length) renderAlbums(albums);
-      else app.innerHTML = '<p class="status">No albums yet.</p>';
+      else app.innerHTML = `<p class="status">${t('photos.empty')}</p>`;
     } catch (err) {
       console.error(err);
-      app.innerHTML = '<p class="status">Could not load photos.</p>';
+      app.innerHTML = `<p class="status">${t('photos.error')}</p>`;
     }
   })();
 })();

@@ -1,6 +1,7 @@
 // Videos page: reads assets/videos/oaklandojos.txt ("orientation,title,url" per line).
 (() => {
   const app = document.getElementById('app');
+  const { t, videoTitle } = window.EC_I18N;
 
   const esc = (s) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -28,12 +29,15 @@
   }
 
   function render(videos) {
-    app.innerHTML = videos.map((v, i) => `
-      <button class="video video--${v.orientation}" type="button" data-index="${i}" aria-label="Play ${esc(v.title)}">
+    app.innerHTML = videos.map((v, i) => {
+      const title = videoTitle(v.title);
+      return `
+      <button class="video video--${v.orientation}" type="button" data-index="${i}" aria-label="${t('videos.play', { title: esc(title) })}">
         <img src="https://i.ytimg.com/vi/${v.id}/${v.orientation === 'portrait' ? 'oar2' : 'maxresdefault'}.jpg" alt="" loading="${i === 0 ? 'eager' : 'lazy'}" decoding="async">
         <span class="video__play" aria-hidden="true"></span>
-        <span class="video__title">${esc(v.title)}</span>
-      </button>`).join('');
+        <span class="video__title">${esc(title)}</span>
+      </button>`;
+    }).join('');
 
     app.querySelectorAll('.video img').forEach((img, i) => {
       img.addEventListener('error', () => {
@@ -48,15 +52,16 @@
   }
 
   function openPlayer(video, trigger) {
+    const title = videoTitle(video.title);
     const el = document.createElement('div');
     el.className = `player player--${video.orientation}`;
     el.setAttribute('role', 'dialog');
-    el.setAttribute('aria-label', video.title);
+    el.setAttribute('aria-label', title);
     const origin = location.protocol.startsWith('http') ? `&origin=${encodeURIComponent(location.origin)}` : '';
     el.innerHTML = `
-      <button class="icon-btn player__close" type="button" aria-label="Close video">&times;</button>
-      <a class="player__yt" href="https://www.youtube.com/watch?v=${video.id}" target="_blank" rel="noopener">Watch on YouTube &nearr;</a>
-      <iframe class="player__frame" title="${esc(video.title)}"
+      <button class="icon-btn player__close" type="button" aria-label="${t('videos.close')}">&times;</button>
+      <a class="player__yt" href="https://www.youtube.com/watch?v=${video.id}" target="_blank" rel="noopener">${t('videos.youtube')}</a>
+      <iframe class="player__frame" title="${esc(title)}"
         src="https://www.youtube.com/embed/${video.id}?autoplay=1&rel=0&playsinline=1${origin}"
         referrerpolicy="strict-origin-when-cross-origin"
         allow="autoplay; fullscreen; picture-in-picture; encrypted-media"></iframe>`;
@@ -108,14 +113,14 @@
 
   (async () => {
     try {
-      const res = await fetch('assets/videos/oaklandojos.txt', { cache: 'no-cache' });
+      const res = await fetch('/assets/videos/oaklandojos.txt', { cache: 'no-cache' });
       if (!res.ok) throw new Error(`videos ${res.status}`);
       const videos = parse(await res.text());
       if (videos.length) render(videos);
-      else app.innerHTML = '<p class="status">No videos yet.</p>';
+      else app.innerHTML = `<p class="status">${t('videos.empty')}</p>`;
     } catch (err) {
       console.error(err);
-      app.innerHTML = '<p class="status">Could not load videos.</p>';
+      app.innerHTML = `<p class="status">${t('videos.error')}</p>`;
     }
   })();
 })();
