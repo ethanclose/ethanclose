@@ -2,9 +2,23 @@
   --ink: #0a0a0a;
   --paper: #fff;
   --mute: #6b6b6b;
+  --surface: #f0f0f0;
+  --backdrop: rgba(255, 255, 255, 0.82);
   --serif: "Libre Caslon Display", "Libre Caslon Text", "Adobe Caslon Pro", "Big Caslon", Georgia, serif;
   --text: "Libre Caslon Text", "Adobe Caslon Pro", "Big Caslon", Georgia, serif;
   --gutter: clamp(1.25rem, 4vw, 3rem);
+  color-scheme: light;
+}
+
+/* Dark theme: the inline script in <head> sets data-theme from the saved choice or
+   the device preference before the first paint. */
+:root[data-theme="dark"] {
+  --ink: #ededed;
+  --paper: #0b0b0b;
+  --mute: #9a9a9a;
+  --surface: #1a1a1a;
+  --backdrop: rgba(0, 0, 0, 0.72);
+  color-scheme: dark;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -22,6 +36,7 @@ body {
   font-weight: 400;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 body.overlay-open { overflow: hidden; }
@@ -57,6 +72,7 @@ main.home .wrap { max-width: none; padding: 0; }
   gap: 0.5rem 1.5rem;
   padding: 0.75rem var(--gutter);
   background: var(--paper);
+  transition: background-color 0.2s ease;
 }
 
 .logo {
@@ -87,6 +103,30 @@ main.home .wrap { max-width: none; padding: 0; }
 
 .nav a.nav__signup:hover,
 .nav a.nav__signup[aria-expanded="true"] { background: var(--ink); color: var(--paper); }
+
+/* Deliberately quiet light/dark switch: an icon-only button that sits with the nav. */
+.theme-toggle {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--mute);
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.theme-toggle:hover { opacity: 1; color: var(--ink); }
+
+.theme-toggle svg { width: 1.05rem; height: 1.05rem; }
+
+.theme-toggle__icon--sun { display: none; }
+
+:root[data-theme="dark"] .theme-toggle__icon--moon { display: none; }
+:root[data-theme="dark"] .theme-toggle__icon--sun { display: block; }
 
 /* ---------- Layout ---------- */
 
@@ -206,7 +246,7 @@ main.home .wrap { max-width: none; padding: 0; }
   height: var(--ch);
   display: block;
   overflow: hidden;
-  background: var(--ink);
+  background: #000;
   color: #fff;
   text-decoration: none;
   container-type: size;
@@ -239,7 +279,7 @@ main.home .wrap { max-width: none; padding: 0; }
   width: calc(var(--sw) + 1px);
   height: var(--ch);
   overflow: hidden;
-  background: var(--ink);
+  background: #000;
   backface-visibility: hidden;
   transform:
     rotateY(calc(var(--base) + (var(--j) + 0.5) * var(--step) - var(--arc) / 2))
@@ -451,7 +491,7 @@ main.home .wrap { max-width: none; padding: 0; }
 
 .album__count { font-size: 0.85rem; color: var(--mute); white-space: nowrap; }
 
-.album__cover { aspect-ratio: 16 / 9; overflow: hidden; background: #f0f0f0; }
+.album__cover { aspect-ratio: 16 / 9; overflow: hidden; background: var(--surface); }
 
 .album__cover img {
   width: 100%;
@@ -492,7 +532,7 @@ main.home .wrap { max-width: none; padding: 0; }
   max-width: 100%;
   max-height: 92vh;
   margin: 0 auto;
-  background: #f0f0f0;
+  background: var(--surface);
 }
 
 .status { padding: 2rem var(--gutter); color: var(--mute); }
@@ -938,7 +978,7 @@ main.home .wrap { max-width: none; padding: 0; }
 
 .modal { position: fixed; inset: 0; z-index: 55; display: grid; place-items: center; padding: var(--gutter); animation: fade 0.25s ease; }
 
-.modal__backdrop { position: absolute; inset: 0; background: rgba(255, 255, 255, 0.82); backdrop-filter: blur(6px); }
+.modal__backdrop { position: absolute; inset: 0; background: var(--backdrop); backdrop-filter: blur(6px); }
 
 .modal__panel {
   position: relative;

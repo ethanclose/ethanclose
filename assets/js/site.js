@@ -1,3 +1,42 @@
+// Theme: the inline <head> script applies the saved choice or the device preference
+// before paint. This keeps the toggle and the live system preference in sync.
+(() => {
+  const root = document.documentElement;
+  const toggle = document.querySelector('.theme-toggle');
+  const query = matchMedia('(prefers-color-scheme: dark)');
+  const KEY = 'ec:theme';
+
+  const saved = () => {
+    try { return localStorage.getItem(KEY); } catch { return null; }
+  };
+
+  function apply(theme, persist) {
+    root.dataset.theme = theme;
+    if (persist) {
+      try { localStorage.setItem(KEY, theme); } catch { /* storage unavailable */ }
+    }
+    if (!toggle) return;
+
+    const dark = theme === 'dark';
+    toggle.setAttribute('aria-pressed', String(dark));
+    toggle.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+    toggle.title = dark ? 'Switch to light mode' : 'Switch to dark mode';
+  }
+
+  apply(root.dataset.theme === 'dark' ? 'dark' : 'light', false);
+
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      apply(root.dataset.theme === 'dark' ? 'light' : 'dark', true);
+    });
+  }
+
+  // Follow the device until the visitor makes a choice of their own.
+  query.addEventListener('change', () => {
+    if (!saved()) apply(query.matches ? 'dark' : 'light', false);
+  });
+})();
+
 // Shared behaviour: newsletter signup form (inline + popup), submitted to Formspree.
 (() => {
   const SIGNUP_ENDPOINT = 'https://formspree.io/f/xbgorovg';
