@@ -111,10 +111,10 @@ main.home .wrap { max-width: none; padding: 0; }
 /* Deliberately quiet light/dark switch: an icon-only button that sits with the nav. */
 .theme-toggle {
   display: grid;
-  place-items: center;
+  place-items: end center;
   width: 1.75rem;
   height: 1.75rem;
-  padding: 0;
+  padding: 0 0 2px;
   border: 0;
   background: none;
   color: var(--mute);
