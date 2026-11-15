@@ -27,7 +27,11 @@ html { -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
+  /* 100vh is the tallest the viewport can get: on phones with the address bar
+     showing, the page would be taller than the screen and scroll. 100svh is the
+     smallest, so the page fits with the bar showing and never scrolls. */
   min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   background: var(--paper);
@@ -238,22 +242,27 @@ main.home .wrap { max-width: none; padding: 0; }
   -webkit-user-select: none;
 }
 
-/* Phones in portrait: the drum grows by a quarter (60vw -> 75vw) so the front cards
-   fill more of the screen. The height cap scales with it (41.5vh -> 51.9vh) so short
-   viewports grow too; --cw follows the new --d on its own. Landscape phones keep the
-   default, as the drum would no longer fit between the header and footer. */
+/* Phones in portrait: the drum is 33% wider than before (75vw -> 99.75vw) so the
+   front cards fill more of the screen. The height cap scales with it (41.5vh ->
+   51.9vh) so short viewports grow too; --cw follows the new --d on its own. Landscape
+   phones keep the default, as the drum would no longer fit between the header and footer. */
 @media (max-width: 760px) and (orientation: portrait) {
   .cards {
-    --d: 75vw;
-    --ch: min(51.9vh, calc(var(--cw) * 5 / 3));
+    --d: 99.75vw;
+    /* Height cap: the room left once the header (~97px), footer (~99px), main's
+       top padding (~38px) and the drum's reserved gaps are taken out, times the
+       3/4 that --ch gets of the cards' reserved box. Keeps the page to one screen. */
+    --ch: min(calc((100vh - 240px - 2 * var(--gap)) * 0.75), calc(var(--cw) * 5 / 3));
+    --ch: min(calc((100svh - 240px - 2 * var(--gap)) * 0.75), calc(var(--cw) * 5 / 3));
   }
 }
 
 /* Short portrait screens cannot fit the enlarged drum once the projected card is
-   accounted for, so pull it back in a little rather than making the page scroll. */
+   accounted for, so pull it back in a little rather than making the page scroll.
+   Same 33% wider than the previous 66vw (66vw -> 87.78vw). */
 @media (max-width: 760px) and (orientation: portrait) and (max-height: 750px) {
   .cards {
-    --d: 66vw;
+    --d: 87.78vw;
     --gap: 1rem;
   }
 }
