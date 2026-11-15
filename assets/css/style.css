@@ -725,7 +725,7 @@ main.home .wrap { max-width: none; padding: 0; }
 
 .statement { padding: clamp(3rem, 9vw, 7rem) 0; }
 
-/* Timeline gets its own column with the heron logo alongside it. The logo is
+/* Timeline gets its own column with the bird logo alongside it. The logo is
    decorative, so it is hidden from assistive tech. */
 .about {
   display: grid;
