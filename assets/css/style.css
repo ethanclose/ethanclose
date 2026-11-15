@@ -653,13 +653,15 @@ main.home .wrap { max-width: none; padding: 0; }
 .contact h2 { font-size: clamp(1.75rem, 3.5vw, 2.5rem); font-weight: 400; letter-spacing: -0.02em; }
 
 .contact dl { margin: 0; }
-.contact dt { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--mute); }
+.contact dt { font-size: 0.8rem; text-transform: lowercase; letter-spacing: 0.12em; color: var(--mute); }
 .contact dd { margin: 0.15rem 0 1.5rem; font-size: 1.25rem; }
 
 /* Left column: contact details on top, seagull filling the space below them.
    Its top sits under "Oakland, California" (the details keep their bottom
    margin) and its bottom edge lines up with the Send button, the last thing in
-   the form column. The image is mirrored so the bird faces right. */
+   the form column. The image is mirrored so the bird faces right.
+   On narrow screens (see media query below) the bird sits between the details
+   and the form instead. */
 .contact__info { grid-column: 1; display: flex; flex-direction: column; min-height: 0; }
 .contact__info > section { flex: none; }
 .contact__side { grid-column: 2; }
@@ -688,7 +690,9 @@ main.home .wrap { max-width: none; padding: 0; }
   .contact__info { display: contents; }
   .contact > section,
   .contact__side { grid-column: auto; }
-  .contact__seagull { order: 1; flex: none; min-height: 0; }
+  /* Stack order: contact details, then the seagull, then the form. */
+  .contact__seagull { flex: none; min-height: 0; }
+  .contact__side { order: 1; }
   .contact__seagull img { position: static; width: clamp(18rem, 100vw, 31.5rem); height: auto; transform: scaleX(-1); }
 }
 
@@ -700,7 +704,7 @@ main.home .wrap { max-width: none; padding: 0; }
 
 .message-form { display: grid; gap: 0.35rem; }
 
-.message-form label { margin-top: 0.75rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--mute); }
+.message-form label { margin-top: 0.75rem; font-size: 0.8rem; text-transform: lowercase; letter-spacing: 0.12em; color: var(--mute); }
 
 .message-form input[type="text"]:not(.signup__trap),
 .message-form input[type="email"],
@@ -725,7 +729,8 @@ main.home .wrap { max-width: none; padding: 0; }
 
 .message-form .btn:disabled { opacity: 0.5; cursor: progress; }
 
-.fs-error { min-height: 1.1em; font-size: 0.85rem; }
+/* Formspree injects capitalized copy ("Thank you!", "...Please try again."). */
+.fs-error { min-height: 1.1em; font-size: 0.85rem; text-transform: lowercase; }
 
 .fs-status:empty { display: none; }
 
@@ -737,6 +742,7 @@ main.home .wrap { max-width: none; padding: 0; }
   background: transparent !important;
   color: var(--ink) !important;
   font-size: 0.95rem;
+  text-transform: lowercase;
 }
 
 .fs-error { color: var(--ink) !important; }
