@@ -312,7 +312,7 @@ main.home .wrap { max-width: none; padding: 0; }
   margin: 0;
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-size: clamp(0.75rem, 1.5vw, 1.125rem);
   letter-spacing: -0.02em;
   line-height: 1.1;
 }
@@ -342,7 +342,7 @@ main.home .wrap { max-width: none; padding: 0; }
   border-bottom: 1px solid var(--ink);
 }
 
-.album-view .page-title { margin-bottom: 2rem; }
+.album-view .page-title { margin-bottom: 2rem; font-size: clamp(0.875rem, 2vw, 1.375rem); }
 
 .photo {
   display: block;
