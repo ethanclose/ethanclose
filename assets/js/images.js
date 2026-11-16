@@ -51,7 +51,6 @@
       <a class="album" href="images.html?album=${encodeURIComponent(a.title)}">
         <div class="album__head">
           <h2 class="album__title">${esc(albumTitle(a.title))}</h2>
-          <span class="album__count">${a.images.length} ${t(a.images.length === 1 ? 'photos.photo' : 'photos.photos')}</span>
         </div>
         <div class="album__cover"><img src="${thumb(albumCover(a), 800)}" data-fallback="${src(albumCover(a))}" alt="${esc(albumTitle(a.title))}" decoding="async"></div>
       </a>`).join('')}</div>`;

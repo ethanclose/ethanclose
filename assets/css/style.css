@@ -547,7 +547,7 @@ main.home .wrap { max-width: none; padding: 0; }
 .album__head {
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 1rem;
   margin-bottom: 0.75rem;
 }
@@ -561,9 +561,7 @@ main.home .wrap { max-width: none; padding: 0; }
   line-height: 1.1;
 }
 
-.album__count { font-size: 0.85rem; color: var(--mute); white-space: nowrap; }
-
-.album__cover { aspect-ratio: 16 / 9; overflow: hidden; background: var(--paper); }
+.album__cover { aspect-ratio: 16 / 9; overflow: hidden; background: var(--surface); }
 
 .album__cover img {
   width: 100%;
