@@ -563,7 +563,7 @@ main.home .wrap { max-width: none; padding: 0; }
 
 .album__count { font-size: 0.85rem; color: var(--mute); white-space: nowrap; }
 
-.album__cover { aspect-ratio: 16 / 9; overflow: hidden; background: var(--surface); }
+.album__cover { aspect-ratio: 16 / 9; overflow: hidden; background: var(--paper); }
 
 .album__cover img {
   width: 100%;
