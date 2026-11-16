@@ -8,11 +8,29 @@
   // Photos live in R2 behind the public images.ethanclose.com domain. Manifest
   // paths stay repo-relative; map assets/images/<album>/<file> to /images/<album>/<file>.
   const MEDIA_BASE = 'https://images.ethanclose.com';
-  const src = (path) => {
-    if (/^https?:\/\//.test(path)) return path;
+  const imageKey = (path) => {
     const key = path.replace(/^\/?assets\/images\//, 'images/');
-    return `${MEDIA_BASE}/${encodeURI(key).replace(/#/g, '%23').replace(/\?/g, '%3F')}`;
+    return encodeURI(key).replace(/#/g, '%23').replace(/\?/g, '%3F');
   };
+  // Full-resolution original, used by the zoomable lightbox where you pinch to 6x.
+  const src = (path) => (/^https?:\/\//.test(path) ? path : `${MEDIA_BASE}/${imageKey(path)}`);
+  // Resized, compressed variant for thumbnails so a photo grid never ships the
+  // 2 MB+ phone originals. Cloudflare Image Resizing renders these on demand and
+  // caches them at the edge. format=auto picks AVIF/WebP/JPEG from the browser's
+  // Accept header; quality=80 applies to the lossy formats.
+  const thumb = (path, width = 800) => (/^https?:\/\//.test(path)
+    ? path
+    : `${MEDIA_BASE}/cdn-cgi/image/width=${width},format=auto,quality=80/${imageKey(path)}`);
+
+  // If a resized thumbnail can't be served (e.g. Image Resizing is disabled on the
+  // zone), fall back to the full-resolution original so the gallery still works.
+  app.addEventListener('error', (e) => {
+    const img = e.target;
+    if (img instanceof HTMLImageElement && img.dataset.fallback && img.dataset.failed !== '1') {
+      img.dataset.failed = '1';
+      img.src = img.dataset.fallback;
+    }
+  }, true);
 
   async function loadAlbums() {
     const res = await fetch('/assets/images/manifest.json', { cache: 'no-cache' });
@@ -35,7 +53,7 @@
           <h2 class="album__title">${esc(albumTitle(a.title))}</h2>
           <span class="album__count">${a.images.length} ${t(a.images.length === 1 ? 'photos.photo' : 'photos.photos')}</span>
         </div>
-        <div class="album__cover"><img src="${src(albumCover(a))}" alt="${esc(albumTitle(a.title))}" decoding="async"></div>
+        <div class="album__cover"><img src="${thumb(albumCover(a), 800)}" data-fallback="${src(albumCover(a))}" alt="${esc(albumTitle(a.title))}" decoding="async"></div>
       </a>`).join('')}</div>`;
   }
 
@@ -48,7 +66,7 @@
         <h1 class="page-title">${esc(title)}</h1>
         ${album.images.map((p, i) => `
           <button class="photo" type="button" data-index="${i}" aria-label="${t('photos.open', { n: i + 1, total: album.images.length })}">
-            <img src="${src(p)}" alt="${t('photos.alt', { title: esc(title), n: i + 1 })}" loading="${i < 2 ? 'eager' : 'lazy'}" decoding="async">
+            <img src="${thumb(p, 1600)}" data-fallback="${src(p)}" alt="${t('photos.alt', { title: esc(title), n: i + 1 })}" loading="${i < 2 ? 'eager' : 'lazy'}" decoding="async">
           </button>`).join('')}
       </div>`;
 
