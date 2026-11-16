@@ -38,8 +38,7 @@
     return (await res.json()).albums || [];
   }
 
-  // Albums whose cover is their final photo rather than the first. The heron album
-  // leads with its last frame, which is also the photo used on the home page.
+  // Albums whose cover is their final photo rather than the first.
   const LAST_PHOTO_COVERS = new Set(['Night Heron']);
   const albumCover = (album) => (LAST_PHOTO_COVERS.has(album.title)
     ? album.images[album.images.length - 1]
